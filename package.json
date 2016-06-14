@@ -1,12 +1,30 @@
 {
-  "name": "python-isort",
+  "name": "atom-isort",
   "main": "./lib/index",
-  "version": "0.0.6",
-  "description": "Organize Python Imports using Isort",
-  "repository": "https://github.com/bh/atom-python-isort",
+  "version": "0.0.0",
+  "description": "Organize python imports using isort",
+  "repository": "https://github.com/lexicalunit/atom-isort",
   "license": "MIT",
   "engines": {
-    "atom": ">0.50.0"
+    "atom": ">=0.185.0 <2.0.0"
   },
-  "dependencies": {}
+  "consumedServices": {
+    "status-bar": {
+      "versions": {
+        "^1.0.0": "consumeStatusBar"
+      }
+    }
+  },
+  "dependencies": {
+    "atom-space-pen-views": "^2.2.0",
+    "fs-plus": "^2.8.1",
+    "jquery": "^2"
+  },
+  "keywords": [
+    "python",
+    "style",
+    "isort",
+    "formatting",
+    "productivity"
+  ]
 }

@@ -3,15 +3,15 @@
     'label': 'Packages'
     'submenu': [
       {
-        'label': 'Python Isort'
+        'label': 'atom-isort'
         'submenu': [
           {
             'label': 'Sort Python Imports'
-            'command': 'python-isort:sortImports'
+            'command': 'atom-isort:sortImports'
           }
           {
             'label': 'Check Python Imports'
-            'command': 'python-isort:checkImports'
+            'command': 'atom-isort:checkImports'
           }
         ]
       }

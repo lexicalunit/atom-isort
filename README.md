@@ -1,15 +1,44 @@
-## Python Isort for Atom editor
+# atom-isort
 
-Uses [Isort](https://github.com/timothycrosley/isort) to organizing Python imports.
+[![apm package][apm-ver-link]][releases]
+<!-- [![][travis-ci-badge]][travis-ci] -->
+[![][david-badge]][david]
+[![][dl-badge]][apm-pkg-link]
+[![][mit-badge]][mit]
 
-![Screenshot](https://raw.githubusercontent.com/bh/atom-python-isort/master/example_sorting.gif)
+Atom.io plugin to format and sort Python imports using [isort](https://github.com/timothycrosley/isort).
 
-### Install
+![Screenshot](https://raw.githubusercontent.com/lexicalunit/atom-isort/master/example_sorting.gif)
 
-Make sure you have `Isort` installed and the correct path to binary was set in the package config.
+## Prerequisites
 
-### Keymap
+Make sure you have `isort` installed and the correct path to the binary set in the package's configuration.
 
-Currently, there are two following commands:
+## Acknowledgements
 
-* `python-isort:sortImports` - for sorting imports
+Heavily influenced by Benjamin Hedrich's [atom-python-isort](https://github.com/bh/atom-python-isort) as well as blacktop's [atom-python-yapf](https://github.com/blacktop/atom-python-yapf). This package is a more up to date and actively developed version of `atom-python-isort`.
+
+## Future Work
+
+- Spec tests.
+- Integration with Travis CI.
+- Better documentation.
+- More configuration options.
+- Up-to-date screenshots.
+
+---
+
+[MIT][mit] © [lexicalunit][author] et [al][contributors]
+
+[mit]:              http://opensource.org/licenses/MIT
+[author]:           http://github.com/lexicalunit
+[contributors]:     https://github.com/lexicalunit/atom-isort/graphs/contributors
+[releases]:         https://github.com/lexicalunit/atom-isort/releases
+[mit-badge]:        https://img.shields.io/apm/l/atom-isort.svg
+[apm-pkg-link]:     https://atom.io/packages/atom-isort
+[apm-ver-link]:     https://img.shields.io/apm/v/atom-isort.svg
+[dl-badge]:         http://img.shields.io/apm/dm/atom-isort.svg
+<!-- [travis-ci-badge]:  https://travis-ci.org/lexicalunit/atom-isort.svg?branch=master -->
+<!-- [travis-ci]:        https://travis-ci.org/lexicalunit/atom-isort -->
+[david-badge]:      https://david-dm.org/lexicalunit/atom-isort.svg
+[david]:            https://david-dm.org/lexicalunit/atom-isort

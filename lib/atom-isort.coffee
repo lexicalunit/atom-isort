@@ -39,13 +39,14 @@ class AtomIsort
       @updateStatusbarText 'unable to open ' + isortPath, false
       return
 
-    params = ['-ns', @getFilePath(), '-vb']
+    params = ['-vb']
     if mode == 'sort'
       @updateStatusbarText '⧗', true
     else if mode == 'check'
       params = params.concat ['-c']
     else
       return
+    params = params.concat [@getFilePath()]
 
     proc = process.spawn isortPath, params
     output = []

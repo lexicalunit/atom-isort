@@ -1,7 +1,6 @@
 # atom-isort
 
 [![apm package][apm-ver-link]][releases]
-<!-- [![][travis-ci-badge]][travis-ci] -->
 [![][david-badge]][david]
 [![][dl-badge]][apm-pkg-link]
 [![][mit-badge]][mit]
@@ -38,7 +37,5 @@ Heavily influenced by Benjamin Hedrich's [atom-python-isort](https://github.com/
 [apm-pkg-link]:     https://atom.io/packages/atom-isort
 [apm-ver-link]:     https://img.shields.io/apm/v/atom-isort.svg
 [dl-badge]:         http://img.shields.io/apm/dm/atom-isort.svg
-<!-- [travis-ci-badge]:  https://travis-ci.org/lexicalunit/atom-isort.svg?branch=master -->
-<!-- [travis-ci]:        https://travis-ci.org/lexicalunit/atom-isort -->
 [david-badge]:      https://david-dm.org/lexicalunit/atom-isort.svg
 [david]:            https://david-dm.org/lexicalunit/atom-isort

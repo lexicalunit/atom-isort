@@ -39,11 +39,11 @@ class AtomIsort
       @updateStatusbarText 'unable to open ' + isortPath, false
       return
 
+    params = ['-ns', @getFilePath(), '-vb']
     if mode == 'sort'
       @updateStatusbarText '⧗', true
-      params = [@getFilePath(), '-vb']
     else if mode == 'check'
-      params = [@getFilePath(), '-c', '-vb']
+      params = params.concat ['-c']
     else
       return
 

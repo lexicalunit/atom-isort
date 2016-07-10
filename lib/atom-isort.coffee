@@ -1,6 +1,7 @@
 fs = require 'fs-plus'
 $ = require 'jquery'
 process = require 'child_process'
+hasbin = require 'hasbin'
 
 module.exports =
 class AtomIsort
@@ -35,7 +36,7 @@ class AtomIsort
       return
 
     isortPath = fs.normalize atom.config.get 'atom-isort.isortPath'
-    if not fs.existsSync isortPath
+    if not fs.existsSync(isortPath) and not hasbin.sync(isortPath)
       @updateStatusbarText 'unable to open ' + isortPath, false
       return
 

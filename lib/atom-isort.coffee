@@ -31,11 +31,19 @@ class AtomIsort
   sortImports: ->
     @runIsort 'sort'
 
+  applySubstitutions: (p) ->
+    for project in atom.project.getPaths()
+      [..., projectName] = project.split(path.sep)
+      p = p.replace(/\$PROJECT_NAME/i, projectName)
+      p = p.replace(/\$PROJECT/i, project)
+    return p
+
   runIsort: (mode) ->
     if not @isPythonContext atom.workspace.getActiveTextEditor()
       return
 
     isortPath = fs.normalize atom.config.get 'atom-isort.isortPath'
+    isortPath = @applySubstitutions(isortPath)
     if not fs.existsSync(isortPath) and not hasbin.sync(isortPath)
       @updateStatusbarText 'unable to open ' + isortPath, false
       return

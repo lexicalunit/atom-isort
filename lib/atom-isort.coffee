@@ -1,8 +1,3 @@
-fs = require 'fs-plus'
-$ = require 'jquery'
-process = require 'child_process'
-hasbin = require 'hasbin'
-
 module.exports =
 class AtomIsort
   statusDialog: null
@@ -32,6 +27,8 @@ class AtomIsort
     @runIsort 'sort'
 
   applySubstitutions: (p) ->
+    path = require 'path'
+
     for project in atom.project.getPaths()
       [..., projectName] = project.split(path.sep)
       p = p.replace(/\$PROJECT_NAME/i, projectName)
@@ -41,6 +38,9 @@ class AtomIsort
   runIsort: (mode) ->
     if not @isPythonContext atom.workspace.getActiveTextEditor()
       return
+
+    fs = require 'fs-plus'
+    hasbin = require 'hasbin'
 
     isortPath = fs.normalize atom.config.get 'atom-isort.isortPath'
     isortPath = @applySubstitutions(isortPath)
@@ -56,6 +56,8 @@ class AtomIsort
     else
       return
     params = params.concat [@getFilePath()]
+
+    process = require 'child_process'
 
     proc = process.spawn isortPath, params
     output = []

@@ -1,7 +1,7 @@
 {
   "name": "atom-isort",
   "main": "./lib/index",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Organize python imports using isort",
   "repository": "https://github.com/lexicalunit/atom-isort",
   "license": "MIT",

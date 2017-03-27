@@ -16,10 +16,10 @@
     }
   },
   "dependencies": {
-    "hasbin": "^1",
     "atom-space-pen-views": "^2.2.0",
-    "fs-plus": "^2.8.1",
-    "jquery": "^3"
+    "fs-plus": "^2.10.1",
+    "hasbin": "^1.2.3",
+    "jquery": "^3.2.1"
   },
   "keywords": [
     "python",

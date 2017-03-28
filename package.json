@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "atom-space-pen-views": "^2.2.0",
-    "fs-plus": "^2.10.1",
+    "fs-plus": "^3.0.0",
     "hasbin": "^1.2.3",
     "jquery": "^3.2.1"
   },

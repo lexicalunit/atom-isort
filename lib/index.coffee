@@ -50,7 +50,7 @@ module.exports =
   deactivate: ->
     @subs?.dispose()
     @subs = null
-    @status?.dispose()
+    @status?.detach()
     @status = null
 
   consumeStatusBar: (statusBar) ->

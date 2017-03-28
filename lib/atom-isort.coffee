@@ -15,16 +15,16 @@ class AtomIsort
     @statusBarTile = null
 
   updateStatusbarText: (message, success) ->
-    @statusDialog.update message, success
+    @statusDialog?.update message, success
 
   getFilePath: ->
     return atom.workspace.getActiveTextEditor().getPath()
 
-  checkImports: ->
-    @runIsort 'check'
+  checkImports: (editor = null) ->
+    @runIsort 'check', editor
 
-  sortImports: ->
-    @runIsort 'sort'
+  sortImports: (editor = null) ->
+    @runIsort 'sort', editor
 
   applySubstitutions: (p) ->
     path = require 'path'
@@ -35,7 +35,8 @@ class AtomIsort
       p = p.replace(/\$PROJECT/i, project)
     return p
 
-  runIsort: (mode) ->
+  runIsort: (mode, editor = null) ->
+    editor = atom.workspace.getActiveTextEditor() if not editor
     if not @isPythonContext atom.workspace.getActiveTextEditor()
       return
 

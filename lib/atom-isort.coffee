@@ -72,7 +72,9 @@ class AtomIsort
     proc.stdout.on 'end', (chunk) ->
       output.join()
     proc.on 'exit', (exit_code, signal) =>
-      if exit_code != 0
+      if exit_code == 127
+        @updateStatusbarText '?', false
+      else if exit_code != 0
         @updateStatusbarText 'x', false
       else
         @updateStatusbarText '√', true

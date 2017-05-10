@@ -20,6 +20,9 @@ class AtomIsort
   getFilePath: ->
     return atom.workspace.getActiveTextEditor().getPath()
 
+  getFileDir: ->
+    return atom.project.relativizePath(@getFilePath())[0]
+
   checkImports: (editor = null) ->
     @runIsort 'check', editor
 
@@ -57,10 +60,11 @@ class AtomIsort
     else
       return
     params = params.concat [@getFilePath()]
+    options = {cwd: @getFileDir()}
 
     process = require 'child_process'
 
-    proc = process.spawn isortPath, params
+    proc = process.spawn isortPath, params, options
     output = []
     proc.stdout.setEncoding 'utf8'
     proc.stdout.on 'data', (chunk) ->
@@ -68,7 +72,9 @@ class AtomIsort
     proc.stdout.on 'end', (chunk) ->
       output.join()
     proc.on 'exit', (exit_code, signal) =>
-      if exit_code != 0
+      if exit_code == 127
+        @updateStatusbarText '?', false
+      else if exit_code != 0
         @updateStatusbarText 'x', false
       else
         @updateStatusbarText '√', true

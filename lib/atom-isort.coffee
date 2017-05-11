@@ -63,18 +63,10 @@ class AtomIsort
     options = {cwd: @getFileDir()}
 
     process = require 'child_process'
-
-    proc = process.spawn isortPath, params, options
-    output = []
-    proc.stdout.setEncoding 'utf8'
-    proc.stdout.on 'data', (chunk) ->
-      output.push chunk
-    proc.stdout.on 'end', (chunk) ->
-      output.join()
-    proc.on 'exit', (exit_code, signal) =>
-      if exit_code == 127
-        @updateStatusbarText '?', false
-      else if exit_code != 0
-        @updateStatusbarText 'x', false
-      else
-        @updateStatusbarText '√', true
+    exit_code = process.spawnSync(isortPath, params, options).status
+    if exit_code == 127
+      @updateStatusbarText '?', false
+    else if exit_code != 0
+      @updateStatusbarText 'x', false
+    else
+      @updateStatusbarText '√', true

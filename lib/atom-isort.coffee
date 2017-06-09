@@ -16,14 +16,16 @@ class AtomIsort
     return editor.getGrammar().scopeName == 'source.python'
 
   setStatusDialog: (dialog) ->
-    @statusDialog = dialog
+    if atom.config.get('atom-isort.showStatusBar')
+      @statusDialog = dialog
 
   removeStatusbarItem: ->
-    @statusBarTile? .destroy()
+    @statusBarTile?.destroy()
     @statusBarTile = null
 
   updateStatusbarText: (message, success) ->
-    @statusDialog? .update message, success
+    if atom.config.get('atom-isort.showStatusBar')
+      @statusDialog?.update message, success
 
   getFilePath: ->
     return atom.workspace.getActiveTextEditor().getPath()

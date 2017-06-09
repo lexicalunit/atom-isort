@@ -11,6 +11,9 @@ module.exports =
     checkOnSave:
       type: 'boolean'
       default: true
+    showStatusBar:
+      type: 'boolean'
+      default: true
 
   status: null
   subs: null
@@ -79,6 +82,12 @@ module.exports =
           editor._isortCheck = editor.onDidSave -> pi.checkImports()
         else
           editor._isortCheck?.dispose()
+
+    @subs.add atom.config.observe 'atom-isort.showStatusBar', (value) ->
+      atom.workspace.observeTextEditors (editor) ->
+        if not value
+          pi.removeStatusbarItem()
+
 
     StatusDialog = require './status-dialog'
     @status = new StatusDialog pi

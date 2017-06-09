@@ -2,6 +2,13 @@ module.exports =
 class AtomIsort
   statusDialog: null
 
+  # TODO: might be better to do python context check in index.coffee, via:
+
+  # @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]',
+  #   'atom-isort:sortImports', -> pi.sortImports()
+
+  # which stops the command from showing up in other editor contexts
+
   isPythonContext: (editor) ->
     if not editor?
       return false

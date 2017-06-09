@@ -30,10 +30,11 @@ class IsortTools(object):
 
         if request['type'] == 'sort_text':
             new_contents = isort.SortImports(
-                    file_contents=request['source']).output
+                file_contents=request['source']).output
 
             self._write_response(
-                self._serialize('sort_text_response', {'new_contents':new_contents}))
+                self._serialize('sort_text_response',
+                                {'new_contents': new_contents}))
 
         elif request['type'] == 'check_text':
             # TODO

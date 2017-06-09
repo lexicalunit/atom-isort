@@ -5,7 +5,7 @@ class AtomIsort
 
   # TODO: might be better to do python context check in index.coffee, via:
 
-  # @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]',
+  #@subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]',
   #   'atom-isort:sortImports', -> pi.sortImports()
 
   # which stops the command from showing up in other editor contexts
@@ -19,11 +19,11 @@ class AtomIsort
     @statusDialog = dialog
 
   removeStatusbarItem: ->
-    @statusBarTile?.destroy()
+    @statusBarTile? .destroy()
     @statusBarTile = null
 
   updateStatusbarText: (message, success) ->
-    @statusDialog?.update message, success
+    @statusDialog? .update message, success
 
   getFilePath: ->
     return atom.workspace.getActiveTextEditor().getPath()
@@ -126,7 +126,11 @@ class AtomIsort
 
     return new Promise((resolve, reject) ->
       response = readline.question("#{JSON.stringify(payload)}\n", (response) ->
-        handle_python_isort_response(JSON.parse(response), insert_type, editor, self)
+        handle_python_isort_response(
+              JSON.parse(response),
+              insert_type,
+              editor,
+              self)
         resolve()
       )
     )
@@ -137,8 +141,13 @@ class AtomIsort
     editor = atom.workspace.getActiveTextEditor() if not editor?
     if response['type'] == 'error'
       console.error(response['error'])
-      atom.notifications.addError(response['error'])
-      # AtomIsort.updateStatusbarText '?', false
+      atom.notifications.addError(
+        "Atom Isort: Python error:", {
+          detail: response['error'],
+          dismissable: true
+        }
+      )
+      self.updateStatusbarText '?', false
       self.close_python_provider()
       return
 
@@ -148,11 +157,11 @@ class AtomIsort
           editor.setText(response['new_contents'])
         else if insert_type == 'insert'
           editor.insertText(response['new_contents'])
-        # AtomIsort.updateStatusbarText '√', true
+        self.updateStatusbarText '√', true
 
       else
         atom.notifications.addInfo("atom-isort could not find any results!")
-        # AtomIsort.updateStatusbarText '?', false
+        self.updateStatusbarText '?', false
     else
       atom.notifications.addError(
         "atom-isort error. #{this._issueReportLink}", {
@@ -160,7 +169,7 @@ class AtomIsort
           dismissable: true
         }
       )
-      # AtomIsort.updateStatusbarText '?', false
+      self.updateStatusbarText '?', false
 
     self.close_python_provider()
     return
@@ -187,8 +196,8 @@ class AtomIsort
       params = params.concat ['-c']
     else
       return
-    params = params.concat [@getFilePath()]
-    options = {cwd: @getFileDir()}
+    params = params.concat [@getFilePath() ]
+    options = {cwd: @getFileDir() }
 
     process = require 'child_process'
     exit_code = process.spawnSync(isortPath, params, options).status

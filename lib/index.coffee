@@ -1,3 +1,5 @@
+path = require('path') ;
+
 module.exports =
   config:
     isortPath:
@@ -15,7 +17,42 @@ module.exports =
 
   activate: ->
     AtomIsort = require './atom-isort'
+    env = process.env
+    pythonPath = atom.config.get('editor-isort.pythonPath')
+    path_env = null
+
+    if /^win/.test(process.platform)
+      paths = [
+        'C:\\Python2.7',
+        'C:\\Python3.4',
+        'C:\\Python34',
+        'C:\\Python3.5',
+        'C:\\Python35',
+        'C:\\Program Files (x86)\\Python 2.7',
+        'C:\\Program Files (x86)\\Python 3.4',
+        'C:\\Program Files (x86)\\Python 3.5',
+        'C:\\Program Files (x64)\\Python 2.7',
+        'C:\\Program Files (x64)\\Python 3.4',
+        'C:\\Program Files (x64)\\Python 3.5',
+        'C:\\Program Files\\Python 2.7',
+        'C:\\Program Files\\Python 3.4',
+        'C:\\Program Files\\Python 3.5'
+      ]
+      path_env = (env.Path or '')
+    else
+      paths = ['/usr/local/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin']
+      path_env = (env.PATH or '')
+
+    path_env = path_env.split(path.delimiter)
+    path_env.unshift(pythonPath if pythonPath and pythonPath not in path_env)
+    for p in paths
+      if p not in path_env
+        path_env.push(p)
+    env.PATH = path_env.join(path.delimiter)
+
     pi = new AtomIsort()
+    pi.python_env = env
+
 
     {CompositeDisposable} = require 'atom'
     @subs = new CompositeDisposable
@@ -52,6 +89,7 @@ module.exports =
     @subs = null
     @status?.detach()
     @status = null
+    # TODO: Make deactivate call pi.close_python_provider
 
   consumeStatusBar: (statusBar) ->
     @status.attach statusBar

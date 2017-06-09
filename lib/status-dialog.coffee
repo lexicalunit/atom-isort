@@ -52,10 +52,13 @@ class IsortStatus extends View
 
   attach: (statusBar) ->
     @statusBar = statusBar
-    @subs.add atom.workspace.onDidChangeActivePaneItem =>
-      editor = atom.workspace.getActiveTextEditor()
-      if editor and @pi.isPythonContext editor
-        @pi.updateStatusbarText '⧗', true
-        @pi.checkImports()
-      else
-        @hideTile()
+    # TODO: This isn't implimented yet, also we shouldn't run isort universally
+    # on pane view change without alowing for a config option or SOMETHING. 
+
+    # @subs.add atom.workspace.onDidChangeActivePaneItem =>
+    #   editor = atom.workspace.getActiveTextEditor()
+    #   if editor and @pi.isPythonContext editor
+    #     @pi.updateStatusbarText '⧗', true
+    #     @pi.checkImports()
+    #   else
+    #     @hideTile()

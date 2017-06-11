@@ -1,6 +1,6 @@
 path = require('path') ;
 
-module.exports =
+module.exports = Index =
   config:
     isortPath:
       type: 'string'
@@ -20,6 +20,7 @@ module.exports =
 
   activate: ->
     AtomIsort = require './atom-isort'
+    StatusDialog = require './status-dialog'
     env = process.env
     pythonPath = atom.config.get('editor-isort.pythonPath')
     path_env = null
@@ -86,18 +87,27 @@ module.exports =
     @subs.add atom.config.observe 'atom-isort.showStatusBar', (value) ->
       atom.workspace.observeTextEditors (editor) ->
         if not value
-          pi.removeStatusbarItem()
+          pi?.removeStatusbarItem()
+        else
+          # TODO: this isn't working, not sure how to get it to. Scope in JS
+          # is confusing.
+          Index.status = new StatusDialog pi
+          pi.setStatusDialog(Index.status)
 
 
-    StatusDialog = require './status-dialog'
     @status = new StatusDialog pi
     pi.setStatusDialog(@status)
+
+
+    @pi = pi
 
   deactivate: ->
     @subs?.dispose()
     @subs = null
     @status?.detach()
     @status = null
+    @pi.close_python_provider()
+    @pi = null
     # TODO: Make deactivate call pi.close_python_provider
 
   consumeStatusBar: (statusBar) ->

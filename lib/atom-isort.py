@@ -37,8 +37,23 @@ class IsortTools(object):
                                 {'new_contents': new_contents}))
 
         elif request['type'] == 'check_text':
-            # TODO
-            pass
+            # Some explanation required:
+            # Since we are using stdout, we can't use the default 'check=True'
+            # option, since isort will write to sdtout if there are errors,
+            # and this cannot be overridden. However, we can replicate the
+            # behavior by sorting imports and then comparing to the unsorted
+            # text. If they are different, then they are not sorted.
+            new_text = isort.SortImports(
+                file_contents=request['source']).output
+
+            # TODO: should we care about whitespace?
+            correctly_sorted = (new_text.split() == request['source'].split())
+
+
+            self._write_response(
+                self._serialize('check_text_response', {
+                    'correctly_sorted': correctly_sorted,
+                }))
 
     def _write_response(self, response):
         sys.stdout.write(response + '\n')

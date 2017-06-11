@@ -16,16 +16,16 @@ class AtomIsort
     return editor.getGrammar().scopeName == 'source.python'
 
   setStatusDialog: (dialog) ->
-    if atom.config.get('atom-isort.showStatusBar')
-      @statusDialog = dialog
+    atom.notifications.addInfo("Set status bar dialog.")
+    @statusDialog = dialog
 
   removeStatusbarItem: ->
-    @statusBarTile?.destroy()
-    @statusBarTile = null
+    atom.notifications.addInfo("Attempted to remove status bar item.")
+    @statusDialog?.destroy()
+    @statusDialog = null
 
   updateStatusbarText: (message, success) ->
-    if atom.config.get('atom-isort.showStatusBar')
-      @statusDialog?.update message, success
+    @statusDialog?.update message, success
 
   getFilePath: ->
     return atom.workspace.getActiveTextEditor().getPath()
@@ -33,9 +33,8 @@ class AtomIsort
   getFileDir: ->
     return atom.project.relativizePath(@getFilePath())[0]
 
-  # TODO: impliment check imports.
-  # checkImports: (editor = null) ->
-  #   @runIsort 'check', editor
+  checkImports: (editor = null) ->
+    @send_python_isort_request 'check_text', editor
 
   sortImports: (editor = null) ->
     @send_python_isort_request 'sort_text', editor
@@ -98,8 +97,8 @@ class AtomIsort
     )
 
   close_python_provider: () ->
-    this.provider.kill()
-    this.readline.close()
+    this.provider?.kill()
+    this.readline?.close()
 
   send_python_isort_request: (request_type, editor = null) ->
     editor = atom.workspace.getActiveTextEditor() if not editor?
@@ -145,7 +144,7 @@ class AtomIsort
       console.error(response['error'])
       atom.notifications.addError(
         "Atom Isort: Python error:", {
-          detail: response['error'],
+          detail: response['error'],#JSON.stringify(response),
           dismissable: true
         }
       )
@@ -153,7 +152,7 @@ class AtomIsort
       self.close_python_provider()
       return
 
-    if response['type'] == 'sort_text_response'
+    else if response['type'] == 'sort_text_response'
       if response['new_contents'].length > 0
         if insert_type == 'set'
           editor.setText(response['new_contents'])
@@ -164,6 +163,19 @@ class AtomIsort
       else
         atom.notifications.addInfo("atom-isort could not find any results!")
         self.updateStatusbarText '?', false
+
+
+    else if response['type'] == 'check_text_response' and response['correctly_sorted']?
+      if response['correctly_sorted']
+        if atom.config.get('atom-isort.showStatusBar')
+          self.updateStatusbarText '√', true
+        else
+          atom.notifications.addSuccess('Imports are correctly sorted.', {dismissable:true})
+      else
+        if atom.config.get('atom-isort.showStatusBar')
+          self.updateStatusbarText 'x', false
+        else
+          atom.notifications.addWarning('Imports are correctly sorted.', {dismissable:true})
     else
       atom.notifications.addError(
         "atom-isort error. #{this._issueReportLink}", {

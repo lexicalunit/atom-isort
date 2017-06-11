@@ -153,6 +153,7 @@ class AtomIsort
       return
 
     else if response['type'] == 'sort_text_response'
+      self.updateStatusbarText '⧗', true
       if response['new_contents'].length > 0
         if insert_type == 'set'
           editor.setText(response['new_contents'])
@@ -166,6 +167,7 @@ class AtomIsort
 
 
     else if response['type'] == 'check_text_response' and response['correctly_sorted']?
+      self.updateStatusbarText '⧗', true
       if response['correctly_sorted']
         if atom.config.get('atom-isort.showStatusBar')
           self.updateStatusbarText '√', true

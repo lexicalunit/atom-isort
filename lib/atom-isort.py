@@ -15,12 +15,6 @@ class IsortTools(object):
         retdict.update(response_dict)
         return json.dumps(retdict)
 
-    # TODO for _process_request:
-    # 1. Read more about isort options: https://github.com/timothycrosley/isort/wiki/isort-Settings
-    #   a. Which settings are neceessary/useful?
-    #   b. isort options include eg line_length, read this from
-    #       editor settings
-
     def _process_request(self, request):
 
         request = json.loads(request)

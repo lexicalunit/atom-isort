@@ -49,7 +49,6 @@ class AtomIsort
       output: this.provider.stdin
     } )
 
-    # TODO: standardize error messages
     this.provider.on('error', (err) =>
       if err.code == 'ENOENT'
         atom.notifications.addWarning("""
@@ -114,7 +113,6 @@ class AtomIsort
       source_text = editor.getSelectedText()
       insert_type = 'insert'
 
-    # TODO: read options from cfg, eg: line max-length from editor settings
     payload =
       type: request_type
       source: source_text

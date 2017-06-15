@@ -5,24 +5,94 @@ module.exports = Index =
     # isortPath:
     #   type: 'string'
     #   default: 'isort'
-    sortOnSave:
-      type: 'boolean'
-      default: false
-    checkOnSave:
-      type: 'boolean'
-      default: true
     showStatusBar:
       type: 'boolean'
       default: true
       description: 'Requires restart to show again.'
-    pythonPath:{
+      order: 0
+    sortOnSave:
+      type: 'boolean'
+      default: false
+      order: 1
+    checkOnSave:
+      type: 'boolean'
+      default: true
+      order: 2
+    pythonPath:
       type: 'string'
       default: ''
       title: 'Path to python directory',
-      description: ''',
+      description: '''
       Optional. Set it if default values are not working for you or you want to use specific
       python version. For example: `/usr/local/Cellar/python/2.7.3/bin` or `E:\\Python2.7`
-      '''}
+      '''
+      order: 3
+    lineLength:
+      type: 'integer'
+      default: 80
+      minimum: 1
+      order: 4
+    balancedWrapping:
+      type: 'boolean'
+      default: false
+      description:'''
+      If set to true - for each multi-line import statement isort will
+      dynamically change the import length to the one that produces the most
+      balanced grid, while staying below the maximum import length defined.
+      '''
+      order: 5
+    orderByType:
+      type: 'boolean'
+      default: false
+      description:'''
+      If set to true - isort will create separate sections within "from" imports
+       for CONSTANTS, Classes, and modules/functions.
+      '''
+      order: 6
+    combineAsImports:
+      type: 'boolean'
+      default: false
+      description: '''
+      If set to true - isort will combine as imports on the same line within for
+       import statements. By default isort forces all as imports to display on
+       their own lines.
+      '''
+      order: 7
+    multiLineOutputMode:
+      type: 'integer'
+      default: 0
+      minimum: 0
+      maximum: 6
+      description: '''
+      [Full description here.](https://github.com/timothycrosley/isort#multi-line-output-modes)
+      0 - Grid, 1 - Vertical, 2 - Hanging Indent, 3 - Vertical Hanging Indent,
+      4 - Hanging Grid, 5 - Hanging Grid Grouped, 6 - NOQA
+      '''
+      order: 8
+    includeTrailingComma:
+      type: 'boolean'
+      default: false
+      description: '''
+      Will set isort to automatically add a trailing comma to the end of from imports.
+      '''
+      order: 9
+    forceSortWithinSections:
+      type: 'boolean'
+      default: false
+      description: '''
+      If set, imports will be sorted within their section independent to the
+      import_type.
+      '''
+      order: 10
+    forceAlphabeticalSort:
+      type: 'boolean'
+      default: false
+      description: '''
+      If set, forces all imports to be sorted as a single section, instead of
+      within other groups (eg, `import os` would instead go after
+      `from os import *`).
+      '''
+      order: 11
 
   status: null
   subs: null
@@ -73,10 +143,10 @@ module.exports = Index =
     @subs.add atom.commands.add 'atom-workspace', 'pane:active-item-changed', ->
       pi.removeStatusbarItem()
 
-    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:sortImports', ->
+    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:sort imports', ->
       pi.sortImports()
 
-    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:checkImports', ->
+    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:check imports', ->
       pi.checkImports()
 
     @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->

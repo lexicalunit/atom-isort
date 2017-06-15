@@ -25,10 +25,13 @@ class IsortTools(object):
 
         request = json.loads(request)
 
-        if request['type'] == 'sort_text':
-            new_contents = isort.SortImports(
-                file_contents=request['source']).output
+        new_contents = isort.SortImports(
+            file_contents=request['source'],
+            **request['options']).output
 
+        # raise AttributeError(request['options'])
+
+        if request['type'] == 'sort_text':
             self._write_response(
                 self._serialize('sort_text_response',
                                 {'new_contents': new_contents}))
@@ -43,11 +46,8 @@ class IsortTools(object):
             if len(request['source'].split()) == 0:
                 correctly_sorted = True
             else:
-                new_text = isort.SortImports(
-                    file_contents=request['source']).output
-
                 correctly_sorted = (
-                    new_text.split('\n') == request['source'].split('\n'))
+                    new_contents.split('\n') == request['source'].split('\n'))
 
             self._write_response(
                 self._serialize('check_text_response', {

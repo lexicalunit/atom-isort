@@ -115,10 +115,19 @@ class AtomIsort
       insert_type = 'insert'
 
     # TODO: read options from cfg, eg: line max-length from editor settings
-    payload = {
-      type: request_type,
+    payload =
+      type: request_type
       source: source_text
-    }
+      options:
+        line_length: atom.config.get('atom-isort.lineLength')
+        multi_line_output: atom.config.get('atom-isort.multiLineOutputMode')
+        balanced_wrapping: atom.config.get('atom-isort.balancedWrapping')
+        order_by_type: atom.config.get('atom-isort.orderByType')
+        combine_as_imports: atom.config.get('atom-isort.combineAsImports')
+        include_trailing_comma: atom.config.get('atom-isort.includeTrailingComma')
+        force_sort_within_sections: atom.config.get('atom-isort.forceSortWithinSections')
+        force_alphabetical_sort: atom.config.get('atom-isort.forceAlphabeticalSort')
+
 
     # This is needed for the promise scope to work correctly
     handle_python_isort_response = this.handle_python_isort_response

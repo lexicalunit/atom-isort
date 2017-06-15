@@ -29,7 +29,9 @@
     "productivity"
   ],
   "activationCommands": {
-    "atom-text-editor[data-grammar=\"source python\"]": "atom-isort:sortImports",
-    "atom-text-editor[data-grammar=\"source python\"]": "atom-isort:checkImports"
+    "atom-text-editor[data-grammar=\"source python\"]": [
+      "atom-isort:check imports",
+      "atom-isort:sort imports"
+    ]
   }
 }

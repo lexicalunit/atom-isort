@@ -3,20 +3,20 @@ class AtomIsort
   statusDialog: null
   _issueReportLink: 'None yet' #TODO: insert issue report url.
 
-  # TODO: might be better to do python context check in index.coffee, via:
-
-  #@subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]',
-  #   'atom-isort:sortImports', -> pi.sortImports()
-
-  # which stops the command from showing up in other editor contexts
-
   isPythonContext: (editor) ->
     if not editor?
       return false
     return editor.getGrammar().scopeName == 'source.python'
 
+  addStatusDialog: (dialog) ->
+    StatusDialog = require './status-dialog'
+    status = new StatusDialog this
+    this.setStatusDialog(status)
+
   setStatusDialog: (dialog) ->
     atom.notifications.addInfo("Set status bar dialog.")
+    @statusDialog?.destroy()
+    @statusDialog = null
     @statusDialog = dialog
 
   removeStatusbarItem: ->
@@ -38,15 +38,6 @@ class AtomIsort
 
   sortImports: (editor = null) ->
     @send_python_isort_request 'sort_text', editor
-
-  applySubstitutions: (p) ->
-    path = require 'path'
-
-    for project in atom.project.getPaths()
-      [..., projectName] = project.split(path.sep)
-      p = p.replace(/\$PROJECT_NAME/i, projectName)
-      p = p.replace(/\$PROJECT/i, project)
-    return p
 
   generate_python_provider: () ->
     env = this.python_env
@@ -140,6 +131,7 @@ class AtomIsort
   handle_python_isort_response: (
       response, insert_type = 'set', editor = null, self = this) ->
     editor = atom.workspace.getActiveTextEditor() if not editor?
+    use_status = atom.config.get('atom-isort.showStatusBar')
     if response['type'] == 'error'
       console.error(response['error'])
       atom.notifications.addError(
@@ -169,15 +161,13 @@ class AtomIsort
     else if response['type'] == 'check_text_response' and response['correctly_sorted']?
       self.updateStatusbarText '⧗', true
       if response['correctly_sorted']
-        if atom.config.get('atom-isort.showStatusBar')
-          self.updateStatusbarText '√', true
-        else
+        self.updateStatusbarText '√', true
+        if not use_status
           atom.notifications.addSuccess('Imports are correctly sorted.', {dismissable:true})
       else
-        if atom.config.get('atom-isort.showStatusBar')
-          self.updateStatusbarText 'x', false
-        else
-          atom.notifications.addWarning('Imports are correctly sorted.', {dismissable:true})
+        self.updateStatusbarText 'x', false
+        if not use_status
+          atom.notifications.addWarning('Imports are incorrectly sorted.', {dismissable:true})
     else
       atom.notifications.addError(
         "atom-isort error. #{this._issueReportLink}", {
@@ -189,37 +179,3 @@ class AtomIsort
 
     self.close_python_provider()
     return
-
-  runIsort: (mode, editor = null) ->
-    atom.notifications.addInfo("Defaulted to old isort")
-    editor = atom.workspace.getActiveTextEditor() if not editor
-    if not @isPythonContext atom.workspace.getActiveTextEditor()
-      return
-
-    fs = require 'fs-plus'
-    hasbin = require 'hasbin'
-
-    isortPath = fs.normalize atom.config.get 'atom-isort.isortPath'
-    isortPath = @applySubstitutions(isortPath)
-    if not fs.existsSync(isortPath) and not hasbin.sync(isortPath)
-      @updateStatusbarText 'unable to open ' + isortPath, false
-      return
-
-    params = ['-ns', @getFilePath(), '-vb']
-    if mode == 'sort'
-      @updateStatusbarText '⧗', true
-    else if mode == 'check'
-      params = params.concat ['-c']
-    else
-      return
-    params = params.concat [@getFilePath() ]
-    options = {cwd: @getFileDir() }
-
-    process = require 'child_process'
-    exit_code = process.spawnSync(isortPath, params, options).status
-    if exit_code == 127
-      @updateStatusbarText '?', false
-    else if exit_code != 0
-      @updateStatusbarText 'x', false
-    else
-      @updateStatusbarText '√', true

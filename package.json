@@ -27,5 +27,9 @@
     "isort",
     "formatting",
     "productivity"
-  ]
+  ],
+  "activationCommands": {
+    "atom-text-editor[data-grammar=\"source python\"]": "atom-isort:sortImports",
+    "atom-text-editor[data-grammar=\"source python\"]": "atom-isort:checkImports"
+  }
 }

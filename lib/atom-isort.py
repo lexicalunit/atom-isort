@@ -20,9 +20,6 @@ class IsortTools(object):
     #   a. Which settings are neceessary/useful?
     #   b. isort options include eg line_length, read this from
     #       editor settings
-    #   c. note: Options can be easily passed as json from JS, and as
-    #       kwargs in the SortImports function.
-    # 2. Add support for isort check? Is that really important?
 
     def _process_request(self, request):
 
@@ -43,11 +40,13 @@ class IsortTools(object):
             # and this cannot be overridden. However, we can replicate the
             # behavior by sorting imports and then comparing to the unsorted
             # text. If they are different, then they are not sorted.
-            new_text = isort.SortImports(
-                file_contents=request['source']).output
+            if len(request['source'].split()) == 0:
+                correctly_sorted = True
+            else:
+                new_text = isort.SortImports(
+                    file_contents=request['source']).output
 
-            # TODO: should we care about whitespace?
-            correctly_sorted = (new_text.split() == request['source'].split())
+                correctly_sorted = (new_text.split('\n') == request['source'].split('\n'))
 
 
             self._write_response(

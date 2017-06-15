@@ -14,6 +14,15 @@ module.exports = Index =
     showStatusBar:
       type: 'boolean'
       default: true
+      description: 'Requires restart to show again.'
+    pythonPath:{
+      type: 'string'
+      default: ''
+      title: 'Path to python directory',
+      description: ''',
+      Optional. Set it if default values are not working for you or you want to use specific
+      python version. For example: `/usr/local/Cellar/python/2.7.3/bin` or `E:\\Python2.7`
+      '''}
 
   status: null
   subs: null
@@ -64,10 +73,10 @@ module.exports = Index =
     @subs.add atom.commands.add 'atom-workspace', 'pane:active-item-changed', ->
       pi.removeStatusbarItem()
 
-    @subs.add atom.commands.add 'atom-workspace', 'atom-isort:sortImports', ->
+    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:sortImports', ->
       pi.sortImports()
 
-    @subs.add atom.commands.add 'atom-workspace', 'atom-isort:checkImports', ->
+    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:checkImports', ->
       pi.checkImports()
 
     @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
@@ -87,18 +96,20 @@ module.exports = Index =
     @subs.add atom.config.observe 'atom-isort.showStatusBar', (value) ->
       atom.workspace.observeTextEditors (editor) ->
         if not value
-          pi?.removeStatusbarItem()
+          if pi.statusDialog?
+            pi.removeStatusbarItem()
         else
           # TODO: this isn't working, not sure how to get it to. Scope in JS
-          # is confusing.
-          Index.status = new StatusDialog pi
-          pi.setStatusDialog(Index.status)
+          # is confusing. Need to call consumeStatusBar?
+          pi.addStatusDialog()
+          @status = pi.statusDialog
 
+    if atom.config.get('atom-isort.showStatusBar')
+      pi.addStatusDialog()
+    # status = new StatusDialog pi
+    # pi.setStatusDialog(status)
 
-    @status = new StatusDialog pi
-    pi.setStatusDialog(@status)
-
-
+    @status = pi.statusDialog
     @pi = pi
 
   deactivate: ->
@@ -108,7 +119,7 @@ module.exports = Index =
     @status = null
     @pi.close_python_provider()
     @pi = null
-    # TODO: Make deactivate call pi.close_python_provider
 
   consumeStatusBar: (statusBar) ->
-    @status.attach statusBar
+    if atom.config.get('atom-isort.showStatusBar')
+      @status.attach statusBar

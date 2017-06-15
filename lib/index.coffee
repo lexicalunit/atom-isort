@@ -2,9 +2,9 @@ path = require('path') ;
 
 module.exports = Index =
   config:
-    isortPath:
-      type: 'string'
-      default: 'isort'
+    # isortPath:
+    #   type: 'string'
+    #   default: 'isort'
     sortOnSave:
       type: 'boolean'
       default: false

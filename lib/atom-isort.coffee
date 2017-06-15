@@ -53,9 +53,9 @@ class AtomIsort
     this.provider.on('error', (err) =>
       if err.code == 'ENOENT'
         atom.notifications.addWarning("""
-          atom - isort was unable to find your machine's python executable.
-          Please try set the path in package settings and then restart atom.
-          If the issue persists please post an issue on
+          Atom-isort was unable to find your machine's python executable.
+          Please try setting the path in package settings, and then restart atom.
+          Consider posting an issue on:
           #{this._issueReportLink}
           """, {
             detail: err,
@@ -64,8 +64,8 @@ class AtomIsort
         )
       else
         atom.notifications.addError("""
-          atom - isort unexpected error.
-          Please consider posting an issue on
+          Atom-isort encountered an unexpected error.
+          Consider posting an issue on:
           #{this._issueReportLink}
           """, {
               detail: err,
@@ -77,8 +77,8 @@ class AtomIsort
       if signal != 'SIGTERM'
         atom.notifications.addError(
           """
-          editor - isort experienced an unexpected exit.
-          Please consider posting an issue on
+          Atom-isort experienced an unexpected exit of the python process.
+          Consider posting an issue on:
           #{this._issueReportLink}
           """, {
             detail: "exit with code #{code}, signal #{signal}",
@@ -95,7 +95,16 @@ class AtomIsort
     editor = atom.workspace.getActiveTextEditor() if not editor?
     this.generate_python_provider()
     if not this.provider?
-      atom.notifications.addError('Python provider could not connect.')
+      atom.notifications.addError(
+        """
+        Atom-isort could not find the python process.
+        Please try setting the path in package settings, and then restart atom.
+        Consider posting an issue on:
+        #{this._issueReportLink}
+        """, {
+          dismissable: true
+        }
+      )
 
     # Get selected text if there is any, else whole editor.
     if editor.getSelectedBufferRange().isEmpty()
@@ -133,9 +142,12 @@ class AtomIsort
     editor = atom.workspace.getActiveTextEditor() if not editor?
     use_status = atom.config.get('atom-isort.showStatusBar')
     if response['type'] == 'error'
-      console.error(response['error'])
       atom.notifications.addError(
-        "Atom Isort: Python error:", {
+        """
+        Atom-isort encountered a python process error.
+        Consider posting an issue on:
+        #{this._issueReportLink}
+        """, {
           detail: response['error'],#JSON.stringify(response),
           dismissable: true
         }
@@ -170,8 +182,12 @@ class AtomIsort
           atom.notifications.addWarning('Imports are incorrectly sorted.', {dismissable:true})
     else
       atom.notifications.addError(
-        "atom-isort error. #{this._issueReportLink}", {
-          detail: JSON.stringify(response),
+        """
+        Atom-isort encountered an error: Incomplete json response from python.
+        Consider posting an issue on:
+        #{this._issueReportLink}
+        """, {
+          detail: response['error'],#JSON.stringify(response),
           dismissable: true
         }
       )

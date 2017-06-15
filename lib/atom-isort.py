@@ -46,8 +46,8 @@ class IsortTools(object):
                 new_text = isort.SortImports(
                     file_contents=request['source']).output
 
-                correctly_sorted = (new_text.split('\n') == request['source'].split('\n'))
-
+                correctly_sorted = (
+                    new_text.split('\n') == request['source'].split('\n'))
 
             self._write_response(
                 self._serialize('check_text_response', {

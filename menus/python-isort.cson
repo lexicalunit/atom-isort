@@ -7,11 +7,11 @@
         'submenu': [
           {
             'label': 'Sort Python Imports'
-            'command': 'atom-isort:sortImports'
+            'command': 'atom-isort:sort imports'
           }
           {
             'label': 'Check Python Imports'
-            'command': 'atom-isort:checkImports'
+            'command': 'atom-isort:check imports'
           }
         ]
       }

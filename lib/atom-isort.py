@@ -2,6 +2,7 @@ import io
 import json
 import sys
 
+
 # Isort is imported in try block at bottom of file.
 
 

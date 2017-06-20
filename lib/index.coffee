@@ -16,7 +16,7 @@ module.exports = Index =
       order: 1
     checkOnSave:
       type: 'boolean'
-      default: true
+      default: false
       order: 2
     pythonPath:
       type: 'string'
@@ -140,8 +140,9 @@ module.exports = Index =
     {CompositeDisposable} = require 'atom'
     @subs = new CompositeDisposable
 
-    @subs.add atom.commands.add 'atom-workspace', 'pane:active-item-changed', ->
-      pi.removeStatusbarItem()
+    if atom.config.get('atom-isort.showStatusBar')
+      @subs.add atom.commands.add 'atom-workspace', 'pane:active-item-changed', ->
+        pi.removeStatusbarItem()
 
     @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:sort imports', ->
       pi.sortImports()

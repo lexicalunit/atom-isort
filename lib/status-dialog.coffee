@@ -51,12 +51,14 @@ class IsortStatus extends View
     @tile = null
 
   attach: (statusBar) ->
-    @statusBar = statusBar
+    if atom.config.get('atom-isort.showStatusBar')
 
-    @subs.add atom.workspace.onDidChangeActivePaneItem =>
-      editor = atom.workspace.getActiveTextEditor()
-      if atom.config.get('atom-isort.showStatusBar') and editor and @pi.isPythonContext editor
-        @pi.updateStatusbarText '⧗', true
-        @pi.checkImports()
-      else
-        @hideTile()
+      @statusBar = statusBar
+
+      @subs.add atom.workspace.onDidChangeActivePaneItem =>
+        editor = atom.workspace.getActiveTextEditor()
+        if editor and @pi.isPythonContext editor
+          @pi.updateStatusbarText '⧗', true
+          @pi.checkImports()
+        else
+          @hideTile()

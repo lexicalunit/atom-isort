@@ -8,7 +8,7 @@ module.exports = Index =
     showStatusBar:
       type: 'boolean'
       default: true
-      description: 'Requires restart to show again.'
+      description: 'Requires restart or reload.'
       order: 0
     sortOnSave:
       type: 'boolean'
@@ -150,19 +150,31 @@ module.exports = Index =
     @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:check imports', ->
       pi.checkImports()
 
-    @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
-      atom.workspace.observeTextEditors (editor) ->
-        if value
-          editor._isortSort = editor.onDidSave -> pi.sortImports()
-        else
-          editor._isortSort?.dispose()
+    ####################################
+    # TODO: Can't figure out how to get the editor to only save *after* isort has
+    # run, since isort now runs via asynchronous JS promise. Can use
+    # .then(=>editor.save())
+    # but that will loop infinitely since sortOnSave calls .save calls
+    # sortOnSave
 
-    @subs.add atom.config.observe 'atom-isort.checkOnSave', (value) ->
-      atom.workspace.observeTextEditors (editor) ->
-        if value
-          editor._isortCheck = editor.onDidSave -> pi.checkImports()
-        else
-          editor._isortCheck?.dispose()
+    # And the above in fact reveals a bug where Atom 'projects' store text
+    # revision history to a point where it adds seconds of load time upon new
+    # edits.
+    ####################################
+
+    # @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
+    #   atom.workspace.observeTextEditors (editor) ->
+    #     if value
+    #       editor._isortSort = editor.onDidSave -> pi.sortImports()
+    #     else
+    #       editor._isortSort?.dispose()
+    #
+    # @subs.add atom.config.observe 'atom-isort.checkOnSave', (value) ->
+    #   atom.workspace.observeTextEditors (editor) ->
+    #     if value
+    #       editor._isortCheck = editor.onDidSave -> pi.checkImports()
+    #     else
+    #       editor._isortCheck?.dispose()
 
     @subs.add atom.config.observe 'atom-isort.showStatusBar', (value) ->
       atom.workspace.observeTextEditors (editor) ->

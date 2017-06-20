@@ -51,9 +51,10 @@ class AtomIsort
 
     this.provider.on('error', (err) =>
       if err.code == 'ENOENT'
-        atom.notifications.addWarning("""
+        atom.notifications.addError("""
           Atom-isort was unable to find your machine's python executable.
-          Please try setting the path in package settings, and then restart atom.
+          Please try setting the path in package settings, and then restart
+          atom.
           Consider posting an issue on:
           #{this._issueReportLink}
           """, {
@@ -117,14 +118,22 @@ class AtomIsort
       type: request_type
       source: source_text
       options:
-        line_length: atom.config.get('atom-isort.lineLength')
-        multi_line_output: atom.config.get('atom-isort.multiLineOutputMode')
-        balanced_wrapping: atom.config.get('atom-isort.balancedWrapping')
-        order_by_type: atom.config.get('atom-isort.orderByType')
-        combine_as_imports: atom.config.get('atom-isort.combineAsImports')
-        include_trailing_comma: atom.config.get('atom-isort.includeTrailingComma')
-        force_sort_within_sections: atom.config.get('atom-isort.forceSortWithinSections')
-        force_alphabetical_sort: atom.config.get('atom-isort.forceAlphabeticalSort')
+        line_length: atom.config.get(
+          'atom-isort.lineLength')
+        multi_line_output: atom.config.get(
+          'atom-isort.multiLineOutputMode')
+        balanced_wrapping: atom.config.get(
+          'atom-isort.balancedWrapping')
+        order_by_type: atom.config.get(
+          'atom-isort.orderByType')
+        combine_as_imports: atom.config.get(
+          'atom-isort.combineAsImports')
+        include_trailing_comma: atom.config.get(
+          'atom-isort.includeTrailingComma')
+        force_sort_within_sections: atom.config.get(
+          'atom-isort.forceSortWithinSections')
+        force_alphabetical_sort: atom.config.get(
+          'atom-isort.forceAlphabeticalSort')
 
 
     # This is needed for the promise scope to work correctly
@@ -163,7 +172,7 @@ class AtomIsort
       self.close_python_provider()
       return
 
-    else if response['type'] == 'sort_text_response'
+    else if response['type'] == 'sort_text_response' and response['new_contents']?
       self.updateStatusbarText '⧗', true
       if response['new_contents'].length > 0
         if insert_type == 'set'
@@ -182,11 +191,13 @@ class AtomIsort
       if response['correctly_sorted']
         self.updateStatusbarText '√', true
         if not use_status
-          atom.notifications.addSuccess('Imports are correctly sorted.', {dismissable:true})
+          atom.notifications.addSuccess('Imports are correctly sorted.',
+            {dismissable:true})
       else
         self.updateStatusbarText 'x', false
         if not use_status
-          atom.notifications.addWarning('Imports are incorrectly sorted.', {dismissable:true})
+          atom.notifications.addWarning('Imports are incorrectly sorted.',
+            {dismissable:true})
     else
       atom.notifications.addError(
         """
@@ -194,7 +205,7 @@ class AtomIsort
         Consider posting an issue on:
         #{this._issueReportLink}
         """, {
-          detail: response['error'],#JSON.stringify(response),
+          detail: response['error'],
           dismissable: true
         }
       )

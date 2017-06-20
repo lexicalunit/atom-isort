@@ -101,6 +101,6 @@ if __name__ == '__main__':
         import isort
         IsortTools().watch()
     except Exception as e:
-        error_response = json.dumps({'type': 'error', 'error': str(e)})
+        error_response = json.dumps({'type': 'error', 'error': repr(e)})
         sys.stdout.write(error_response + '\n')
         sys.stdout.flush()

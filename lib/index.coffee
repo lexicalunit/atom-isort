@@ -152,7 +152,7 @@ module.exports = Index =
 
     ####################################
     # TODO: Can't figure out how to get the editor to only save *after* isort has
-    # run, since isort now runs via asynchronous JS promise. Can use
+    # run, since isort now runs asynchronously. Can use:
     # .then(=>editor.save())
     # but that will loop infinitely since sortOnSave calls .save calls
     # sortOnSave
@@ -165,14 +165,14 @@ module.exports = Index =
     # @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
     #   atom.workspace.observeTextEditors (editor) ->
     #     if value
-    #       editor._isortSort = editor.onDidSave -> pi.sortImports()
+    #       editor._isortSort = editor.buffer.onWillSave -> pi.sortImports(editor, true)
     #     else
     #       editor._isortSort?.dispose()
     #
     # @subs.add atom.config.observe 'atom-isort.checkOnSave', (value) ->
     #   atom.workspace.observeTextEditors (editor) ->
     #     if value
-    #       editor._isortCheck = editor.onDidSave -> pi.checkImports()
+    #       editor._isortCheck = editor.buffer.onWillSave -> pi.checkImports(editor, true)
     #     else
     #       editor._isortCheck?.dispose()
 

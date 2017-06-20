@@ -1,7 +1,7 @@
 module.exports =
 class AtomIsort
   statusDialog: null
-  _issueReportLink: 'https://github.com/lexicalunit/atom-isort/issues/new' 
+  _issueReportLink: 'https://github.com/lexicalunit/atom-isort/issues/new'
 
   isPythonContext: (editor) ->
     if not editor?
@@ -31,11 +31,11 @@ class AtomIsort
   getFileDir: ->
     return atom.project.relativizePath(@getFilePath())[0]
 
-  checkImports: (editor = null) ->
-    @send_python_isort_request 'check_text', editor
+  checkImports: (editor = null, force_use_whole_editor = false) ->
+    @send_python_isort_request 'check_text', force_use_whole_editor, editor
 
-  sortImports: (editor = null) ->
-    @send_python_isort_request 'sort_text', editor
+  sortImports: (editor = null, force_use_whole_editor = false) ->
+    @send_python_isort_request 'sort_text', force_use_whole_editor, editor
 
   generate_python_provider: () ->
     env = this.python_env
@@ -89,7 +89,7 @@ class AtomIsort
     this.provider?.kill()
     this.readline?.close()
 
-  send_python_isort_request: (request_type, editor = null) ->
+  send_python_isort_request: (request_type, force_use_whole_editor, editor = null) ->
     editor = atom.workspace.getActiveTextEditor() if not editor?
     this.generate_python_provider()
     if not this.provider?
@@ -105,7 +105,7 @@ class AtomIsort
       )
 
     # Get selected text if there is any, else whole editor.
-    if editor.getSelectedBufferRange().isEmpty()
+    if editor.getSelectedBufferRange().isEmpty() or force_use_whole_editor
       source_text = editor.getText()
       insert_type = 'set'
     else
@@ -138,6 +138,17 @@ class AtomIsort
     handle_python_isort_response = this.handle_python_isort_response
     readline = this.readline
     self = this
+
+    # readline.setPrompt("#{JSON.stringify(payload)}\n")
+    # readline.prompt()
+    # readline.on('line', (line) ->
+    #   handle_python_isort_response(
+    #         JSON.parse(line),
+    #         insert_type,
+    #         editor,
+    #         self))
+    #
+    # return readline
 
     return new Promise((resolve, reject) ->
       response = readline.question("#{JSON.stringify(payload)}\n", (response) ->
@@ -203,7 +214,7 @@ class AtomIsort
         Consider posting an issue on:
         #{this._issueReportLink}
         """, {
-          detail: response['error'],
+          detail: JSON.stringify(response),
           dismissable: true
         }
       )

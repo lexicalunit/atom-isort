@@ -1,7 +1,7 @@
 module.exports =
 class AtomIsort
   statusDialog: null
-  _issueReportLink: 'None yet' #TODO: insert issue report url.
+  _issueReportLink: 'https://github.com/lexicalunit/atom-isort/issues/new' 
 
   isPythonContext: (editor) ->
     if not editor?
@@ -14,13 +14,11 @@ class AtomIsort
     this.setStatusDialog(status)
 
   setStatusDialog: (dialog) ->
-    atom.notifications.addInfo("Set status bar dialog.")
     @statusDialog?.destroy()
     @statusDialog = null
     @statusDialog = dialog
 
   removeStatusbarItem: ->
-    atom.notifications.addInfo("Attempted to remove status bar item.")
     @statusDialog?.destroy()
     @statusDialog = null
 
@@ -182,7 +180,7 @@ class AtomIsort
         self.updateStatusbarText '√', true
 
       else
-        atom.notifications.addInfo("atom-isort could not find any results!")
+        atom.notifications.addInfo("atom-isort could not find any results.")
         self.updateStatusbarText '?', false
 
 

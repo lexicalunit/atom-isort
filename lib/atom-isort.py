@@ -94,6 +94,7 @@ class IsortTools(object):
                 raise EnvironmentError('io recieved no data.')
 
             self._process_request(data)
+            quit()
 
 
 if __name__ == '__main__':

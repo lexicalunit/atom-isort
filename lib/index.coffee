@@ -162,19 +162,19 @@ module.exports = Index =
     # edits.
     ####################################
 
-    # @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
-    #   atom.workspace.observeTextEditors (editor) ->
-    #     if value
-    #       editor._isortSort = editor.buffer.onWillSave -> pi.sortImports(editor, true)
-    #     else
-    #       editor._isortSort?.dispose()
-    #
-    # @subs.add atom.config.observe 'atom-isort.checkOnSave', (value) ->
-    #   atom.workspace.observeTextEditors (editor) ->
-    #     if value
-    #       editor._isortCheck = editor.buffer.onWillSave -> pi.checkImports(editor, true)
-    #     else
-    #       editor._isortCheck?.dispose()
+    @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
+      atom.workspace.observeTextEditors (editor) ->
+        if value
+          editor._isortSort = editor.buffer.onWillSave -> pi.sortImports(editor, true)
+        else
+          editor._isortSort?.dispose()
+
+    @subs.add atom.config.observe 'atom-isort.checkOnSave', (value) ->
+      atom.workspace.observeTextEditors (editor) ->
+        if value
+          editor._isortCheck = editor.buffer.onWillSave -> pi.checkImports(editor, true)
+        else
+          editor._isortCheck?.dispose()
 
     @subs.add atom.config.observe 'atom-isort.showStatusBar', (value) ->
       atom.workspace.observeTextEditors (editor) ->

@@ -2,6 +2,7 @@ path = require('path') ;
 
 module.exports = Index =
   config:
+    # TODO: add support for isort path. 
     # isortPath:
     #   type: 'string'
     #   default: 'isort'

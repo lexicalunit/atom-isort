@@ -2,7 +2,7 @@ path = require('path') ;
 
 module.exports = Index =
   config:
-    # TODO: add support for isort path. 
+    # TODO: add support for isort path.
     # isortPath:
     #   type: 'string'
     #   default: 'isort'
@@ -171,8 +171,8 @@ module.exports = Index =
           if pi.statusDialog?
             pi.removeStatusbarItem()
         else
-          # TODO: this isn't working, not sure how to get it to. Scope in JS
-          # is confusing. Need to call consumeStatusBar?
+          # TODO: re-adding status bar isn't working, not sure how to get it to.
+          # Scope in JS is confusing. Need to call consumeStatusBar?
           pi.addStatusDialog()
           @status = pi.statusDialog
 

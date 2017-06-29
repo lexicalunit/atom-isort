@@ -150,18 +150,6 @@ module.exports = Index =
     @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:check imports', ->
       pi.checkImports()
 
-    ####################################
-    # TODO: Can't figure out how to get the editor to only save *after* isort has
-    # run, since isort now runs asynchronously. Can use:
-    # .then(=>editor.save())
-    # but that will loop infinitely since sortOnSave calls .save calls
-    # sortOnSave
-
-    # And the above in fact reveals a bug where Atom 'projects' store text
-    # revision history to a point where it adds seconds of load time upon new
-    # edits.
-    ####################################
-
     @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
       atom.workspace.observeTextEditors (editor) ->
         if value
@@ -200,7 +188,6 @@ module.exports = Index =
     @subs = null
     @status?.detach()
     @status = null
-    @pi.close_python_provider()
     @pi = null
 
   consumeStatusBar: (statusBar) ->

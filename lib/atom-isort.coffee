@@ -37,74 +37,10 @@ class AtomIsort
   sortImports: (editor = null, force_use_whole_editor = false) ->
     @send_python_isort_request 'sort_text', force_use_whole_editor, editor
 
-  # generate_python_provider: () ->
-  #   env = this.python_env
-  #   this.provider = require('child_process').spawn(
-  #     'python', [__dirname + '/atom-isort.py'], env: env
-  #   )
-  #   this.readline = require('readline').createInterface({
-  #     input: this.provider.stdout,
-  #     output: this.provider.stdin
-  #   } )
-  #
-  #   this.provider.on('error', (err) =>
-  #     if err.code == 'ENOENT'
-  #       atom.notifications.addError("""
-  #         Atom-isort was unable to find your machine's python executable.
-  #         Please try setting the path in package settings, and then restart
-  #         atom.
-  #         Consider posting an issue on:
-  #         #{this._issueReportLink}
-  #         """, {
-  #           detail: err,
-  #           dismissable: true
-  #         }
-  #       )
-  #     else
-  #       atom.notifications.addError("""
-  #         Atom-isort encountered an unexpected error.
-  #         Consider posting an issue on:
-  #         #{this._issueReportLink}
-  #         """, {
-  #             detail: err,
-  #             dismissable: true
-  #           }
-  #       )
-  #   )
-  #   this.provider.on('exit', (code, signal) =>
-  #     if signal != 'SIGTERM'
-  #       atom.notifications.addError(
-  #         """
-  #         Atom-isort experienced an unexpected exit of the python process.
-  #         Consider posting an issue on:
-  #         #{this._issueReportLink}
-  #         """, {
-  #           detail: "exit with code #{code}, signal #{signal}",
-  #           dismissable: true
-  #         }
-  #       )
-  #   )
-  #
-  # close_python_provider: () ->
-  #   this.provider?.kill()
-  #   this.readline?.close()
-
   send_python_isort_request: (request_type, force_use_whole_editor, editor = null) ->
     editor = atom.workspace.getActiveTextEditor() if not editor?
     if not this.isPythonContext(editor)
       return null
-    # this.generate_python_provider()
-    # if not this.provider?
-    #   atom.notifications.addError(
-    #     """
-    #     Atom-isort could not find the python process.
-    #     Please try setting the path in package settings, and then restart atom.
-    #     Consider posting an issue on:
-    #     #{this._issueReportLink}
-    #     """, {
-    #       dismissable: true
-    #     }
-    #   )
 
     # Get selected text if there is any, else whole editor.
     if editor.getSelectedBufferRange().isEmpty() or force_use_whole_editor
@@ -136,14 +72,53 @@ class AtomIsort
           'atom-isort.forceAlphabeticalSort')
 
 
-    # This is needed for the promise scope to work correctly
-    # handle_python_isort_response = this.handle_python_isort_response
-    # readline = this.readline
     self = this
 
     py_response = require('child_process').spawnSync(
-      'python', [__dirname + '/atom-isort.py'], {env: this.python_env, input: "#{JSON.stringify(payload)}\n"}
+      'python',
+      [__dirname + '/atom-isort.py'],
+      {env: this.python_env, input: "#{JSON.stringify(payload)}\n"}
     )
+
+    if py_response.error?
+      if py_response.error.code == 'ENOENT'
+        atom.notifications.addError("""
+          Atom-isort was unable to find your machine's python executable.
+          Please try setting the path in package settings, and then restart
+          atom.
+          Consider posting an issue on:
+          #{this._issueReportLink}
+          """, {
+            detail: err,
+            dismissable: true
+          }
+        )
+      else
+        atom.notifications.addError("""
+          Atom-isort encountered an unexpected error.
+          Consider posting an issue on:
+          #{this._issueReportLink}
+          """, {
+              detail: err,
+              dismissable: true
+            }
+        )
+      return null
+
+    if py_response.stderr? and py_response.stderr.length > 0
+      atom.notifications.addError(
+        """
+        Atom-isort experienced an unexpected exit of the python process.
+        Consider posting an issue on:
+        #{this._issueReportLink}
+        """, {
+          detail: "exit with error: #{py_response.stderr}",
+          # detail: "exit with error: #{Object.keys(py_response)}",
+          dismissable: true
+        }
+      )
+      return null
+
     this.handle_python_isort_response(
             JSON.parse(py_response.stdout),
             insert_type,
@@ -151,49 +126,12 @@ class AtomIsort
             self)
 
 
-    # readline.setPrompt("#{JSON.stringify(payload)}\n")
-    # readline.prompt()
-    # readline.on('line', (line) ->
-    #   handle_python_isort_response(
-    #         JSON.parse(line),
-    #         insert_type,
-    #         editor,
-    #         self))
-    #
-    # return readline
-
-    # return new Promise((resolve, reject) ->
-    #   response = readline.question("#{JSON.stringify(payload)}\n", (response) ->
-    #     handle_python_isort_response(
-    #           JSON.parse(response),
-    #           insert_type,
-    #           editor,
-    #           self)
-    #     resolve()
-    #   )
-    # )
-
-
   handle_python_isort_response: (
       response, insert_type = 'set', editor = null, self = this) ->
     editor = atom.workspace.getActiveTextEditor() if not editor?
     use_status = atom.config.get('atom-isort.showStatusBar')
-    if response['type'] == 'error'
-      atom.notifications.addError(
-        """
-        Atom-isort encountered a python process error.
-        Consider posting an issue on:
-        #{this._issueReportLink}
-        """, {
-          detail: response['error'],#JSON.stringify(response),
-          dismissable: true
-        }
-      )
-      self.updateStatusbarText '?', false
-      self.close_python_provider()
-      return
 
-    else if response['type'] == 'sort_text_response' and response['new_contents']?
+    if response['type'] == 'sort_text_response' and response['new_contents']?
       self.updateStatusbarText '⧗', true
       if response['new_contents'].length > 0
         if insert_type == 'set'
@@ -232,5 +170,4 @@ class AtomIsort
       )
       self.updateStatusbarText '?', false
 
-    # self.close_python_provider()
     return

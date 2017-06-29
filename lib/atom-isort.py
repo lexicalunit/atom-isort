@@ -2,8 +2,7 @@ import io
 import json
 import sys
 
-# `isort` is imported in try block at bottom of file, in order to provide a
-# useful error message to 'lib/atom-isort.coffee'.
+import isort
 
 
 class IsortTools(object):
@@ -84,24 +83,27 @@ class IsortTools(object):
         sys.stdout.write(response + '\n')
         sys.stdout.flush()
 
-    def watch(self):
-        '''Watches for inputs, then calls self._process_request on them.
+    def read_and_process(self):
+        '''Reads input, then calls self._process_request on it.
         '''
-        while True:
-            data = self._input.readline()
+        data = self._input.readline()
 
-            if len(data) == 0:
-                raise EnvironmentError('io recieved no data.')
+        if len(data) == 0:
+            raise EnvironmentError('io recieved no data.')
 
-            self._process_request(data)
-            quit()
-
+        self._process_request(data)
+        return
 
 if __name__ == '__main__':
-    try:
-        import isort
-        IsortTools().watch()
-    except Exception as e:
-        error_response = json.dumps({'type': 'error', 'error': repr(e)})
-        sys.stdout.write(error_response + '\n')
-        sys.stdout.flush()
+    IsortTools().read_and_process()
+    quit()
+
+    # try:
+    #     import isort
+    #     IsortTools().watch()
+    # except Exception as e:
+    #     error_response = json.dumps({'type': 'error', 'error': repr(e)})
+    #     sys.stdout.write(error_response + '\n')
+    #     sys.stdout.flush()
+    # finally:
+    #     quit()

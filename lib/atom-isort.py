@@ -55,7 +55,7 @@ class IsortTools(object):
 
         elif request['type'] == 'check_text':
 
-            #### Some explanation required: ####
+            # NOTE: Some explanation required:
             # Since we are using stdout, we can't use the default 'check=True'
             # option, since isort will write to sdtout if there are errors,
             # and this cannot be overridden with a function call. However, we

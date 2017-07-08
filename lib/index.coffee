@@ -1,4 +1,4 @@
-path = require('path') ;
+path = require('path')
 
 module.exports = Index =
   config:
@@ -107,19 +107,19 @@ module.exports = Index =
 
     if /^win/.test(process.platform)
       paths = [
-        'C:\\Python2.7',
-        'C:\\Python3.4',
-        'C:\\Python34',
-        'C:\\Python3.5',
-        'C:\\Python35',
-        'C:\\Program Files (x86)\\Python 2.7',
-        'C:\\Program Files (x86)\\Python 3.4',
-        'C:\\Program Files (x86)\\Python 3.5',
-        'C:\\Program Files (x64)\\Python 2.7',
-        'C:\\Program Files (x64)\\Python 3.4',
-        'C:\\Program Files (x64)\\Python 3.5',
-        'C:\\Program Files\\Python 2.7',
-        'C:\\Program Files\\Python 3.4',
+        'C:\\Python2.7'
+        'C:\\Python3.4'
+        'C:\\Python34'
+        'C:\\Python3.5'
+        'C:\\Python35'
+        'C:\\Program Files (x86)\\Python 2.7'
+        'C:\\Program Files (x86)\\Python 3.4'
+        'C:\\Program Files (x86)\\Python 3.5'
+        'C:\\Program Files (x64)\\Python 2.7'
+        'C:\\Program Files (x64)\\Python 3.4'
+        'C:\\Program Files (x64)\\Python 3.5'
+        'C:\\Program Files\\Python 2.7'
+        'C:\\Program Files\\Python 3.4'
         'C:\\Program Files\\Python 3.5'
       ]
       path_env = (env.Path or '')
@@ -137,31 +137,32 @@ module.exports = Index =
     pi = new AtomIsort()
     pi.python_env = env
 
-
     {CompositeDisposable} = require 'atom'
     @subs = new CompositeDisposable
 
-    if atom.config.get('atom-isort.showStatusBar')
+    if atom.config.get 'atom-isort.showStatusBar'
       @subs.add atom.commands.add 'atom-workspace', 'pane:active-item-changed', ->
         pi.removeStatusbarItem()
 
-    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:sort imports', ->
-      pi.sortImports()
+    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]',
+      'atom-isort:sort imports', ->
+        pi.sortImports()
 
-    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]','atom-isort:check imports', ->
-      pi.checkImports()
+    @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]',
+      'atom-isort:check imports', ->
+        pi.checkImports()
 
     @subs.add atom.config.observe 'atom-isort.sortOnSave', (value) ->
       atom.workspace.observeTextEditors (editor) ->
         if value
-          editor._isortSort = editor.buffer.onWillSave -> pi.sortImports(editor, true)
+          editor._isortSort = editor.buffer.onWillSave -> pi.sortImports editor, true
         else
           editor._isortSort?.dispose()
 
     @subs.add atom.config.observe 'atom-isort.checkOnSave', (value) ->
       atom.workspace.observeTextEditors (editor) ->
         if value
-          editor._isortCheck = editor.buffer.onWillSave -> pi.checkImports(editor, true)
+          editor._isortCheck = editor.buffer.onWillSave -> pi.checkImports editor, true
         else
           editor._isortCheck?.dispose()
 
@@ -176,7 +177,7 @@ module.exports = Index =
           pi.addStatusDialog()
           @status = pi.statusDialog
 
-    if atom.config.get('atom-isort.showStatusBar')
+    if atom.config.get 'atom-isort.showStatusBar'
       pi.addStatusDialog()
     # status = new StatusDialog pi
     # pi.setStatusDialog(status)
@@ -192,5 +193,5 @@ module.exports = Index =
     @pi = null
 
   consumeStatusBar: (statusBar) ->
-    if atom.config.get('atom-isort.showStatusBar')
+    if atom.config.get 'atom-isort.showStatusBar'
       @status.attach statusBar

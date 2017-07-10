@@ -54,6 +54,12 @@ class AtomIsort
       source: source_text
       options:
         line_length: atom.config.get 'atom-isort.lineLength'
+        indent: atom.config.get 'atom-isort.indent'
+        import_heading_future: atom.config.get 'atom-isort.importHeadingFuture'
+        import_heading_stdlib: atom.config.get 'atom-isort.importHeadingStdlib'
+        import_heading_thirdparty: atom.config.get 'atom-isort.importHeadingThirdparty'
+        import_heading_firstparty: atom.config.get 'atom-isort.importHeadingFirstparty'
+        import_heading_localfolder: atom.config.get 'atom-isort.importHeadingLocalfolder'
         multi_line_output: atom.config.get 'atom-isort.multiLineOutputMode'
         balanced_wrapping: atom.config.get 'atom-isort.balancedWrapping'
         order_by_type: atom.config.get 'atom-isort.orderByType'

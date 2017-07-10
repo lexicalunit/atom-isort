@@ -22,7 +22,7 @@ module.exports = Index =
     pythonPath:
       type: 'string'
       default: ''
-      title: 'Path to python directory',
+      title: 'Path to python directory'
       description: '''
       Optional. Set it if default values are not working for you or you want to use specific
       python version. For example: `/usr/local/Cellar/python/2.7.3/bin` or `E:\\Python2.7`
@@ -33,6 +33,46 @@ module.exports = Index =
       default: 80
       minimum: 1
       order: 4
+    indent:
+      type: 'integer'
+      default: 4
+      minimum: 1
+      order: 5
+    importHeadingFuture:
+      type: 'string'
+      default: ''
+      description: '''
+      A comment to consistently place directly above future imports.
+      '''
+      order: 6
+    importHeadingStdlib:
+      type: 'string'
+      default: ''
+      description: '''
+      A comment to consistently place directly above imports from the standard library.
+      '''
+      order: 7
+    importHeadingThirdparty:
+      type: 'string'
+      default: ''
+      description: '''
+      A comment to consistently place directly above third party imports.
+      '''
+      order: 8
+    importHeadingFirstparty:
+      type: 'string'
+      default: ''
+      description: '''
+      A comment to consistently place directly above first party imports.
+      '''
+      order: 9
+    importHeadingLocalfolder:
+      type: 'string'
+      default: ''
+      description: '''
+      A comment to consistently place directly above local folder imports.
+      '''
+      order: 10
     balancedWrapping:
       type: 'boolean'
       default: false
@@ -41,7 +81,7 @@ module.exports = Index =
       dynamically change the import length to the one that produces the most
       balanced grid, while staying below the maximum import length defined.
       '''
-      order: 5
+      order: 11
     orderByType:
       type: 'boolean'
       default: false
@@ -49,7 +89,7 @@ module.exports = Index =
       If set to true - isort will create separate sections within "from" imports
        for CONSTANTS, Classes, and modules/functions.
       '''
-      order: 6
+      order: 12
     combineAsImports:
       type: 'boolean'
       default: false
@@ -58,7 +98,7 @@ module.exports = Index =
        import statements. By default isort forces all as imports to display on
        their own lines.
       '''
-      order: 7
+      order: 13
     multiLineOutputMode:
       type: 'integer'
       default: 0
@@ -69,14 +109,14 @@ module.exports = Index =
       0 - Grid, 1 - Vertical, 2 - Hanging Indent, 3 - Vertical Hanging Indent,
       4 - Hanging Grid, 5 - Hanging Grid Grouped, 6 - NOQA
       '''
-      order: 8
+      order: 14
     includeTrailingComma:
       type: 'boolean'
       default: false
       description: '''
       Will set isort to automatically add a trailing comma to the end of from imports.
       '''
-      order: 9
+      order: 15
     forceSortWithinSections:
       type: 'boolean'
       default: false
@@ -84,7 +124,7 @@ module.exports = Index =
       If set, imports will be sorted within their section independent to the
       import_type.
       '''
-      order: 10
+      order: 16
     forceAlphabeticalSort:
       type: 'boolean'
       default: false
@@ -93,7 +133,7 @@ module.exports = Index =
       within other groups (eg, `import os` would instead go after
       `from os import *`).
       '''
-      order: 11
+      order: 17
 
   status: null
   subs: null

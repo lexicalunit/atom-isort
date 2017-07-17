@@ -15,8 +15,8 @@ Atom.io plugin to format and sort Python imports using
 
 ## Prerequisites
 
-Make sure you have `isort` and `python` installed. The `python` installation path can set in the
-package configuration. As for installation of `isort`, there are good options such as
+Make sure you have `isort` and `python` installed. Set the `python` installation in the package
+configuration if necessary. As for installation of `isort`, there are good options such as
 [`conda`][conda] or [`pip`][pip].
 
 ## Acknowledgements

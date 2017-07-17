@@ -113,7 +113,9 @@ class AtomIsort
       self.updateStatusbarText '⧗', true
       if response['new_contents'].length > 0
         if insert_type == 'set'
+          pos = editor.getCursorScreenPosition()
           editor.setText response['new_contents']
+          editor.setCursorScreenPosition(pos)
         else if insert_type == 'insert'
           editor.insertText response['new_contents']
         self.updateStatusbarText '√', true

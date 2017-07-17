@@ -1,10 +1,12 @@
 # atom-isort
 
 [![apm package][apm-ver-link]][releases]
-[![][travis-ci-badge]][travis-ci]
-[![][david-badge]][david]
-[![][dl-badge]][apm-pkg-link]
-[![][mit-badge]][mit]
+[![travis-ci][travis-ci-badge]][travis-ci]
+[![appveyor][appveyor-badge]][appveyor]
+[![circle-ci][circle-ci-badge]][circle-ci]
+[![david][david-badge]][david]
+[![download][dl-badge]][apm-pkg-link]
+[![mit][mit-badge]][mit]
 
 Atom.io plugin to format and sort Python imports using
 [isort](https://github.com/timothycrosley/isort).
@@ -36,9 +38,13 @@ Heavily influenced by Benjamin Hedrich's
 [apm-pkg-link]:     https://atom.io/packages/atom-isort
 [apm-ver-link]:     https://img.shields.io/apm/v/atom-isort.svg
 [dl-badge]:         http://img.shields.io/apm/dm/atom-isort.svg
-[david-badge]:      https://david-dm.org/lexicalunit/atom-isort.svg
-[david]:            https://david-dm.org/lexicalunit/atom-isort
 [travis-ci-badge]:  https://travis-ci.org/lexicalunit/atom-isort.svg?branch=master
 [travis-ci]:        https://travis-ci.org/lexicalunit/atom-isort
+[appveyor]:         https://ci.appveyor.com/project/lexicalunit/atom-isort?branch=master
+[appveyor-badge]:   https://ci.appveyor.com/api/projects/status/mjla5e3rynka5uro/branch/master?svg=true
+[circle-ci]:        https://circleci.com/gh/lexicalunit/atom-isort/tree/master
+[circle-ci-badge]:  https://circleci.com/gh/lexicalunit/atom-isort/tree/master.svg?style=shield
+[david-badge]:      https://david-dm.org/lexicalunit/atom-isort.svg
+[david]:            https://david-dm.org/lexicalunit/atom-isort
 [conda]:            https://conda.io/docs/intro.html
 [pip]:              https://pip.pypa.io/en/latest/

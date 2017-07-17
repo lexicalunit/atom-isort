@@ -219,8 +219,6 @@ module.exports = Index =
 
     if atom.config.get 'atom-isort.showStatusBar'
       pi.addStatusDialog()
-    # status = new StatusDialog pi
-    # pi.setStatusDialog(status)
 
     @status = pi.statusDialog
     @pi = pi

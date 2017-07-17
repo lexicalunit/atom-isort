@@ -1,6 +1,7 @@
 # atom-isort
 
 [![apm package][apm-ver-link]][releases]
+[![][travis-ci-badge]][travis-ci]
 [![][david-badge]][david]
 [![][dl-badge]][apm-pkg-link]
 [![][mit-badge]][mit]
@@ -23,14 +24,6 @@ Heavily influenced by Benjamin Hedrich's
 [atom-python-yapf](https://github.com/blacktop/atom-python-yapf). This package is a more up to date
  and actively developed version of `atom-python-isort`.
 
-## Future Work
-
-- Spec tests.
-- Integration with Travis CI.
-- Better documentation.
-- More configuration options.
-- Up-to-date screenshots.
-
 ---
 
 [MIT][mit] © [lexicalunit][author] et [al][contributors]
@@ -45,5 +38,7 @@ Heavily influenced by Benjamin Hedrich's
 [dl-badge]:         http://img.shields.io/apm/dm/atom-isort.svg
 [david-badge]:      https://david-dm.org/lexicalunit/atom-isort.svg
 [david]:            https://david-dm.org/lexicalunit/atom-isort
+[travis-ci-badge]:  https://travis-ci.org/lexicalunit/atom-isort.svg?branch=master
+[travis-ci]:        https://travis-ci.org/lexicalunit/atom-isort
 [conda]:            https://conda.io/docs/intro.html
 [pip]:              https://pip.pypa.io/en/latest/

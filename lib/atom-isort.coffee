@@ -1,29 +1,26 @@
 module.exports =
 
 class AtomIsort
-  statusDialog: null
-  _issueReportLink: 'https://github.com/lexicalunit/atom-isort/issues/new'
+  ################
+  ## Public API ##
+  ################
+  constructor: (pythonEnv) ->
+    @pythonEnv = pythonEnv
+
+  checkImports: (editor = null, useEntireEditor = false) ->
+    @isortRequest 'check_text', useEntireEditor, editor
+
+  sortImports: (editor = null, useEntireEditor = false) ->
+    @isortRequest 'sort_text', useEntireEditor, editor
+
+  ############################
+  ## Private Implementation ##
+  ############################
+  issueReportLink: 'https://github.com/lexicalunit/atom-isort/issues/new'
 
   isPythonContext: (editor) ->
     return false if not editor?
     editor.getGrammar().scopeName == 'source.python'
-
-  addStatusDialog: (dialog) ->
-    StatusDialog = require './status-dialog'
-    status = new StatusDialog this
-    this.setStatusDialog status
-
-  setStatusDialog: (dialog) ->
-    @statusDialog?.destroy()
-    @statusDialog = null
-    @statusDialog = dialog
-
-  removeStatusbarItem: ->
-    @statusDialog?.destroy()
-    @statusDialog = null
-
-  updateStatusbarText: (message, success) ->
-    @statusDialog?.update message, success
 
   getFilePath: ->
     atom.workspace.getActiveTextEditor().getPath()
@@ -31,27 +28,21 @@ class AtomIsort
   getFileDir: ->
     atom.project.relativizePath(@getFilePath())[0]
 
-  checkImports: (editor = null, force_use_whole_editor = false) ->
-    @send_python_isort_request 'check_text', force_use_whole_editor, editor
-
-  sortImports: (editor = null, force_use_whole_editor = false) ->
-    @send_python_isort_request 'sort_text', force_use_whole_editor, editor
-
-  send_python_isort_request: (request_type, force_use_whole_editor, editor = null) ->
+  isortRequest: (requestType, useEntireEditor, editor = null) ->
     editor = atom.workspace.getActiveTextEditor() if not editor?
-    return null if not this.isPythonContext editor
+    return null if not @isPythonContext editor
 
     # Get selected text if there is any, else whole editor.
-    if editor.getSelectedBufferRange().isEmpty() or force_use_whole_editor
-      source_text = editor.getText()
-      insert_type = 'set'
+    if editor.getSelectedBufferRange().isEmpty() or useEntireEditor
+      sourceText = editor.getText()
+      insertType = 'set'
     else
-      source_text = editor.getSelectedText()
-      insert_type = 'insert'
+      sourceText = editor.getSelectedText()
+      insertType = 'insert'
 
     payload =
-      type: request_type
-      source: source_text
+      type: requestType
+      source: sourceText
       options:
         line_length: atom.config.get 'atom-isort.lineLength'
         indent: atom.config.get 'atom-isort.indent'
@@ -68,78 +59,64 @@ class AtomIsort
         force_sort_within_sections: atom.config.get 'atom-isort.forceSortWithinSections'
         force_alphabetical_sort: atom.config.get 'atom-isort.forceAlphabeticalSort'
 
-    self = this
-
-    py_response = require('child_process').spawnSync(
+    pyResponse = require('child_process').spawnSync(
       'python',
       [__dirname + '/atom-isort.py'],
-      {env: this.python_env, input: "#{JSON.stringify(payload)}\n"}
+      {env: @pythonEnv, input: "#{JSON.stringify(payload)}\n"}
     )
 
-    if py_response.error?
-      if py_response.error.code == 'ENOENT'
+    if pyResponse.error?
+      if pyResponse.error.code == 'ENOENT'
         atom.notifications.addError """
           Atom-isort was unable to find your machine's python executable.
           Please try setting the path in package settings, and then restart atom.
-          Consider posting an issue on: #{this._issueReportLink}
+          Consider posting an issue on: #{@issueReportLink}
           """,
-          detail: err,
+          detail: pyResponse.error,
           dismissable: true
       else
         atom.notifications.addError """
           Atom-isort encountered an unexpected error.
-          Consider posting an issue on: #{this._issueReportLink}
+          Consider posting an issue on: #{@issueReportLink}
           """,
-          detail: err,
           dismissable: true
       return null
 
-    if py_response.stderr? and py_response.stderr.length > 0
+    if pyResponse.stderr? and pyResponse.stderr.length > 0
       atom.notifications.addError """
         Atom-isort experienced an unexpected exit of the python process.
-        Consider posting an issue on: #{this._issueReportLink}
+        Consider posting an issue on: #{@issueReportLink}
         """,
-        detail: "exit with error: #{py_response.stderr}", # "exit with error: #{Object.keys(py_response)}"
+        detail: "exit with error: #{pyResponse.stderr}",
         dismissable: true
       return null
 
-    this.handle_python_isort_response JSON.parse(py_response.stdout), insert_type, editor, self
+    @handleIsortResponse JSON.parse(pyResponse.stdout), insertType, editor, this
 
-  handle_python_isort_response: (response, insert_type = 'set', editor = null, self = this) ->
+  handleIsortResponse: (response, insertType = 'set', editor = null, self = this) ->
     editor = atom.workspace.getActiveTextEditor() if not editor?
-    use_status = atom.config.get('atom-isort.showStatusBar')
 
     if response['type'] == 'sort_text_response' and response['new_contents']?
-      self.updateStatusbarText '⧗', true
       if response['new_contents'].length > 0
-        if insert_type == 'set'
+        if insertType == 'set'
           pos = editor.getCursorScreenPosition()
           editor.setText response['new_contents']
-          editor.setCursorScreenPosition(pos)
-        else if insert_type == 'insert'
+          editor.setCursorScreenPosition pos
+          return true
+        else if insertType == 'insert'
           editor.insertText response['new_contents']
-        self.updateStatusbarText '√', true
+          return false # can not guarantee the entire file is properly isorted
       else
         atom.notifications.addInfo 'atom-isort could not find any results.'
-        self.updateStatusbarText '?', false
+        return false
     else if response['type'] == 'check_text_response' and response['correctly_sorted']?
-      self.updateStatusbarText '⧗', true
-      if response['correctly_sorted']
-        self.updateStatusbarText '√', true
-        if not use_status
-          atom.notifications.addSuccess 'Imports are correctly sorted.',
-            dismissable: true
-      else
-        self.updateStatusbarText 'x', false
-        if not use_status
-          atom.notifications.addWarning 'Imports are incorrectly sorted.',
-            dismissable: true
+      return response['correctly_sorted']
     else
       atom.notifications.addError """
         Atom-isort encountered an error: Incomplete json response from python.
         Consider posting an issue on:
-        #{this._issueReportLink}
+        #{@issueReportLink}
         """,
         detail: JSON.stringify(response)
         dismissable: true
-      self.updateStatusbarText '?', false
+      return false

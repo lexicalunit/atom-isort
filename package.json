@@ -6,20 +6,20 @@
   "repository": "https://github.com/lexicalunit/atom-isort",
   "license": "MIT",
   "engines": {
-    "atom": ">=0.185.0 <2.0.0"
+    "atom": ">=1.4.0 <2.0.0"
   },
-  "consumedServices": {
-    "status-bar": {
+  "package-deps": [
+    "linter"
+  ],
+  "providedServices": {
+    "linter": {
       "versions": {
-        "^1.0.0": "consumeStatusBar"
+        "2.0.0": "provideLinter"
       }
     }
   },
   "dependencies": {
-    "atom-space-pen-views": "^2.2.0",
-    "fs-plus": "^3.0.0",
-    "hasbin": "^1.2.3",
-    "jquery": "^3.2.1"
+    "atom-package-deps": "^4.2.0"
   },
   "keywords": [
     "python",

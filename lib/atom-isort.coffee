@@ -67,7 +67,7 @@ class AtomIsort
         include_trailing_comma: atom.config.get 'atom-isort.includeTrailingComma'
         force_sort_within_sections: atom.config.get 'atom-isort.forceSortWithinSections'
         force_alphabetical_sort: atom.config.get 'atom-isort.forceAlphabeticalSort'
-
+        settings_path: editor.getPath()
     self = this
 
     py_response = require('child_process').spawnSync(

@@ -48,7 +48,7 @@ class AtomIsort
     else
       atom.notifications.addWarning '''
         Running isort on an unsaved file.
-        Settings detection for isort may not work crrectly.
+        Settings detection for isort may not work correctly.
         ''',
         dismissable: true
 

@@ -51,9 +51,8 @@ class IsortTools(object):
 
 
         Args:
-            request (str): A string representing a json dump made by
-                'lib/atom-isort.coffee'. Should have 'file_contents',
-                'file_path', and 'type' keys.
+            request (str): A string representing a json dump made by this
+                script must have 'file_contents', 'file_path', and 'type' keys.
         '''
         request = json.loads(request)
 

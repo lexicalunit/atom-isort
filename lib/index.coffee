@@ -55,8 +55,8 @@ module.exports =
 
   handleEvents: (pi) ->
     {CompositeDisposable} = require 'atom'
-    @subs = new CompositeDisposable
-    @editorSubs = new CompositeDisposable
+    @subs = new CompositeDisposable()
+    @editorSubs = new CompositeDisposable()
     @subs.add atom.commands.add 'atom-text-editor[data-grammar="source python"]',
       'atom-isort:sort imports', ->
         pi.sortImports()
@@ -71,12 +71,12 @@ module.exports =
     console.log 'activate atom-isort' if atom.inDevMode()
     require('atom-package-deps').install 'atom-isort'
     AtomIsort = require './atom-isort'
-    @pi = new AtomIsort @setupEnv()
+    @pi = new AtomIsort(@setupEnv())
     @handleEvents @pi
 
   provideLinter: ->
     AtomIsortLinter = require './atom-isort-linter'
-    @linter = new AtomIsortLinter @pi if not @linter
+    @linter = new AtomIsortLinter(@pi) if not @linter
     return @linter
 
   deactivate: ->

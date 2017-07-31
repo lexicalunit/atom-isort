@@ -53,7 +53,7 @@ class AtomIsort
         dismissable: true
 
     pythonProgram = 'python'
-    pythonArgs = [__dirname + '/atom-isort.py']
+    pythonArgs = ['-B', __dirname + '/atom-isort.py']
     try
       stdinInput = "#{JSON.stringify(payload)}\n"
     catch error

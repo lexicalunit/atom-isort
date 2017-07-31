@@ -6,6 +6,8 @@ from contextlib import contextmanager
 
 import isort
 
+sys.dont_write_bytecode = True
+
 
 @contextmanager
 def silence_stdout():

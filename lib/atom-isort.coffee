@@ -42,14 +42,22 @@ class AtomIsort
     payload =
       type: requestType
       file_contents: sourceText
-      file_path: editor.getPath()
+
+    if editor.getPath()
+      payload['file_path'] = editor.getPath()
+    else
+      atom.notifications.addWarning '''
+        Running isort on an unsaved file.
+        Settings detection for isort may not work crrectly.
+        ''',
+        dismissable: true
 
     pythonProgram = 'python'
     pythonArgs = [__dirname + '/atom-isort.py']
     try
       stdinInput = "#{JSON.stringify(payload)}\n"
     catch error
-      atom.notifications.addError "Failed to construct isort input payload.",
+      atom.notifications.addError 'Failed to construct isort input payload.',
         detail: "Payload: #{payload}"
         dismissable: true
       return null
@@ -58,20 +66,20 @@ class AtomIsort
 
     if pyResponse.error?
       if pyResponse.error.code == 'ENOENT'
-        atom.notifications.addError """
+        atom.notifications.addError '''
           Unable to find your python executable.
           Please upte the path to your python executable in the package settings, and restart Atom.
-          """,
+          ''',
           detail: pyResponse.error,
           dismissable: true
       else
-        atom.notifications.addError "Encounted an unexpected error.",
+        atom.notifications.addError 'Encounted an unexpected error.',
           detail: pyResponse.error,
           dismissable: true
       return null
 
     if pyResponse.stderr? and pyResponse.stderr.length > 0
-      atom.notifications.addError "Unexpected errors while running python process.",
+      atom.notifications.addError 'Unexpected errors while running python process.',
         detail: "#{pyResponse.stderr}",
         dismissable: true
       return null
@@ -79,7 +87,7 @@ class AtomIsort
     try
       response = JSON.parse(pyResponse.stdout)
     catch error
-      atom.notifications.addError "Could not parse isort response.",
+      atom.notifications.addError 'Could not parse isort response.',
         detail: "#{pyResponse.stdout}"
         dismissable: true
       return null
@@ -105,7 +113,7 @@ class AtomIsort
     else if response['type'] == 'check_text_response' and response['correctly_sorted']?
       return response['correctly_sorted']
     else
-      atom.notifications.addError "Incomplete response from python.",
-        detail: response
+      atom.notifications.addError 'Incomplete response from python.',
+        detail: "#{response}"
         dismissable: true
       return false

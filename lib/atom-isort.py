@@ -58,7 +58,7 @@ class IsortTools(object):
 
         with silence_stdout():
             new_contents = isort.SortImports(file_contents=request['file_contents'],
-                                             file_path=request['file_path'],
+                                             file_path=request.get('file_path'),
                                              write_to_stdout=True).output
 
         if request['type'] == 'sort_text':

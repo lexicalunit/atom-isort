@@ -1,8 +1,20 @@
 import io
 import json
+import os
 import sys
+from contextlib import contextmanager
 
 import isort
+
+
+@contextmanager
+def silence_stdout():
+    new_target = open(os.devnull, 'w')
+    old_target, sys.stdout = sys.stdout, new_target
+    try:
+        yield new_target
+    finally:
+        sys.stdout = old_target
 
 
 class IsortTools(object):
@@ -18,7 +30,7 @@ class IsortTools(object):
 
         Args:
             response_type (str): The type of json response, eg:
-                'sort_text', 'check_text', 'error'
+                'sort_text', 'check_text'
             response_dict (dict): The dictionary of response values, eg:
                 'new_contents':(str), 'correctly_sorted':(bool)
 
@@ -34,19 +46,21 @@ class IsortTools(object):
         '''Processes json request, writes appropriate response.
 
         eg: If the `request['type']` is 'sort_text', write a json dict
-        containing a sorted version of `request['source']` via
+        containing a sorted version of `request['file_contents']` via
         `self._write_response`.
 
 
         Args:
             request (str): A string representing a json dump made by
-                'lib/atom-isort.coffee'. Should have 'source' and 'options'
-                keys.
+                'lib/atom-isort.coffee'. Should have 'file_contents',
+                'file_path', and 'type' keys.
         '''
         request = json.loads(request)
 
-        new_contents = isort.SortImports(
-            file_contents=request['source'], **request['options']).output
+        with silence_stdout():
+            new_contents = isort.SortImports(file_contents=request['file_contents'],
+                                             file_path=request['file_path'],
+                                             write_to_stdout=True).output
 
         if request['type'] == 'sort_text':
             self._write_response(
@@ -63,10 +77,10 @@ class IsortTools(object):
             # to the unsorted text. If they are different, then they are not
             # sorted.
 
-            if len(request['source'].split()) == 0:
+            if len(request['file_contents'].split()) == 0:
                 correctly_sorted = True
             else:
-                correctly_sorted = (new_contents == request['source'])
+                correctly_sorted = (new_contents == request['file_contents'])
 
             self._write_response(
                 self._serialize_response('check_text_response', {
@@ -97,13 +111,3 @@ class IsortTools(object):
 if __name__ == '__main__':
     IsortTools().read_and_process()
     quit()
-
-    # try:
-    #     import isort
-    #     IsortTools().watch()
-    # except Exception as e:
-    #     error_response = json.dumps({'type': 'error', 'error': repr(e)})
-    #     sys.stdout.write(error_response + '\n')
-    #     sys.stdout.flush()
-    # finally:
-    #     quit()

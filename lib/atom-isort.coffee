@@ -85,10 +85,14 @@ class AtomIsort
       return null
 
     try
-      response = JSON.parse(pyResponse.stdout)
+      # Ignore any unsilenced output from isort.SortImports() when write_to_stdout=True.
+      sentry = '__ATOM_ISORT_SENTRY__'
+      data = pyResponse.stdout.toString()
+      start = data.indexOf(sentry) + sentry.length
+      response = JSON.parse(data.slice(start))
     catch error
       atom.notifications.addError 'Could not parse isort response.',
-        detail: "#{pyResponse.stdout}"
+        detail: "#{error}: #{pyResponse.stdout}"
         dismissable: true
       return null
     @handleIsortResponse response, insertType, editor

@@ -95,6 +95,7 @@ class IsortTools(object):
             response (string): A string representing a json dump readable by
                 'lib/atom-isort.coffee'.
         '''
+        sys.stdout.write('__' + 'ATOM_ISORT_SENTRY' + '__')
         sys.stdout.write(response + '\n')
         sys.stdout.flush()
 

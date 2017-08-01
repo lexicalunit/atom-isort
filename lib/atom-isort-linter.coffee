@@ -16,7 +16,7 @@ class AtomIsortLinter
       severity: 'warning'
       location: {
         file: textEditor.getPath()
-        position: [[0, 0], [0, 1]]
+        position: [[0, 0], [0, 0]]
       }
       excerpt: 'Imports not sorted'
       linterName: 'isort'

@@ -102,14 +102,15 @@ class AtomIsort
 
     if response['type'] == 'sort_text_response' and response['new_contents']?
       if response['new_contents'].length > 0
+        pos = editor.getCursorScreenPosition()
         if insertType == 'set'
-          pos = editor.getCursorScreenPosition()
           editor.setText response['new_contents']
-          editor.setCursorScreenPosition pos
-          return true
+          rvalue = true
         else if insertType == 'insert'
           editor.insertText response['new_contents']
-          return false # can not guarantee the entire file is properly isorted
+          rvalue = false # can not guarantee the entire file is properly isorted
+        editor.setCursorScreenPosition pos
+        return rvalue
       else
         atom.notifications.addInfo 'atom-isort could not find any results.',
           dismissable: true

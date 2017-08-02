@@ -1,6 +1,6 @@
 {
   "name": "atom-isort",
-  "main": "./lib/index",
+  "main": "./index",
   "version": "2.2.6",
   "description": "Organize python imports using isort",
   "repository": "https://github.com/lexicalunit/atom-isort",
@@ -27,5 +27,13 @@
     "isort",
     "formatting",
     "productivity"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
+  }
 }

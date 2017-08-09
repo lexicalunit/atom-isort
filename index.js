@@ -56,7 +56,7 @@ export default {
     this.subs = new CompositeDisposable()
     this.editorSubs = new CompositeDisposable()
     this.subs.add(
-      atom.commands.add(atom.workspace, 'atom-isort:sort imports', () => {
+      atom.commands.add('atom-text-editor', 'atom-isort:sort imports', () => {
         this.sorter.sortImports(atom.workspace.getActiveTextEditor())
       })
     )

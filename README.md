@@ -3,7 +3,6 @@
 [![apm package][apm-ver-link]][releases]
 [![travis-ci][travis-ci-badge]][travis-ci]
 [![appveyor][appveyor-badge]][appveyor]
-[![circle-ci][circle-ci-badge]][circle-ci]
 [![david][david-badge]][david]
 [![download][dl-badge]][apm-pkg-link]
 [![mit][mit-badge]][mit]
@@ -40,8 +39,6 @@ more up to date and actively developed version of `atom-python-isort`.
 [travis-ci]:            https://travis-ci.org/lexicalunit/atom-isort
 [appveyor]:             https://ci.appveyor.com/project/lexicalunit/atom-isort?branch=master
 [appveyor-badge]:       https://ci.appveyor.com/api/projects/status/mjla5e3rynka5uro/branch/master?svg=true
-[circle-ci]:            https://circleci.com/gh/lexicalunit/atom-isort/tree/master
-[circle-ci-badge]:      https://circleci.com/gh/lexicalunit/atom-isort/tree/master.svg?style=shield
 [david-badge]:          https://david-dm.org/lexicalunit/atom-isort.svg
 [david]:                https://david-dm.org/lexicalunit/atom-isort
 

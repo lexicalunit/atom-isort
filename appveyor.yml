@@ -9,7 +9,7 @@ environment:
   - ATOM_CHANNEL: beta
 
 install:
-  - "%PYTHON%\\python.exe -m pip install isort"
+  - "%PYTHON%\\python.exe -m pip install --user isort"
 
 ### Generic setup follows ###
 build_script:

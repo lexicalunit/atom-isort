@@ -59,14 +59,15 @@ class IsortTools(object):
         request = json.loads(request)
 
         with silence_stdout():
-            new_contents = isort.SortImports(file_contents=request['file_contents'],
-                                             file_path=request.get('file_path'),
-                                             write_to_stdout=True).output
+            new_contents = isort.SortImports(
+                file_contents=request['file_contents'],
+                file_path=request.get('file_path'),
+                write_to_stdout=True,
+                not_skip=['__init__.py', request.get('file_path')]).output
 
         if request['type'] == 'sort_text':
             self._write_response(
-                self._serialize_response('sort_text_response',
-                                         {'new_contents': new_contents}))
+                self._serialize_response('sort_text_response', {'new_contents': new_contents}))
 
         elif request['type'] == 'check_text':
 
@@ -109,6 +110,7 @@ class IsortTools(object):
 
         self._process_request(data)
         return
+
 
 if __name__ == '__main__':
     IsortTools().read_and_process()

@@ -51,7 +51,6 @@ class IsortTools(object):
         containing a sorted version of `request['file_contents']` via
         `self._write_response`.
 
-
         Args:
             request (str): A string representing a json dump made by this
                 script must have 'file_contents', 'file_path', and 'type' keys.
@@ -63,14 +62,18 @@ class IsortTools(object):
                 file_contents=request['file_contents'],
                 file_path=request.get('file_path'),
                 write_to_stdout=True,
-                not_skip=['__init__.py', request.get('file_path')]).output
+                not_skip=['__init__.py', request.get('file_path')])
+            if hasattr(new_contents, 'output'):
+                new_contents = new_contents.output
+            else:
+                return self._write_response(
+                    self._serialize_response('error'), {'description': 'no output from isort'})
 
         if request['type'] == 'sort_text':
-            self._write_response(
+            return self._write_response(
                 self._serialize_response('sort_text_response', {'new_contents': new_contents}))
 
-        elif request['type'] == 'check_text':
-
+        if request['type'] == 'check_text':
             # NOTE: Some explanation required:
             # Since we are using stdout, we can't use the default 'check=True'
             # option, since isort will write to sdtout if there are errors,
@@ -78,13 +81,11 @@ class IsortTools(object):
             # can replicate the behavior by sorting imports and then comparing
             # to the unsorted text. If they are different, then they are not
             # sorted.
-
             if len(request['file_contents'].split()) == 0:
                 correctly_sorted = True
             else:
                 correctly_sorted = (new_contents == request['file_contents'])
-
-            self._write_response(
+            return self._write_response(
                 self._serialize_response('check_text_response', {
                     'correctly_sorted': correctly_sorted,
                 }))

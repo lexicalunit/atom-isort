@@ -84,7 +84,7 @@ class IsortTools(object):
             if len(request['file_contents'].split()) == 0:
                 correctly_sorted = True
             else:
-                correctly_sorted = (new_contents == request['file_contents'])
+                correctly_sorted = (unicode(new_contents, 'utf-8') == request['file_contents'])
             return self._write_response(
                 self._serialize_response('check_text_response', {
                     'correctly_sorted': correctly_sorted,

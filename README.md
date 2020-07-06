@@ -1,11 +1,11 @@
 # atom-isort
 
 [![apm package][apm-ver-link]][releases]
-[![travis-ci][travis-ci-badge]][travis-ci]
-[![appveyor][appveyor-badge]][appveyor]
 [![david][david-badge]][david]
 [![download][dl-badge]][apm-pkg-link]
 [![mit][mit-badge]][mit]
+<!-- [![travis-ci][travis-ci-badge]][travis-ci] -->
+<!-- [![appveyor][appveyor-badge]][appveyor] -->
 
 Atom.io plugin to format and sort Python imports using [isort][isort].
 
@@ -22,6 +22,35 @@ are good options such as [`conda`][conda] or [`pip`][pip].
 Heavily influenced by Benjamin Hedrich's [atom-python-isort][atom-python-isort]
 as well as blacktop's [atom-python-yapf][atom-python-yapf]. This package is a
 more up to date and actively developed version of `atom-python-isort`.
+
+## Testing
+
+I've disabled CI/CD for this project because I can not get
+[Atom CI](https://github.com/atom/ci) to work correctly since the latest version
+of isort came out. Below is some instruction on how to do manual testing.
+
+```shell
+# first uninstall an pre-existing isort installation,
+# you'll need to reinstall this yourself at the end of testing.
+yes | pip uninstall isort
+
+# install atom-isort
+npm install
+
+# check linting
+npx eslint .
+
+# check unit tests against atom and atom-beta against the latest isort
+yes | pip install isort
+atom --test spec
+atom-beta --test spec
+
+# check unit tests against atom and atom-beta against an isort 4.x version
+yes | pip uninstall isort
+yes | pip install "isort<5"
+atom --test spec
+atom-beta --test spec
+```
 
 ---
 

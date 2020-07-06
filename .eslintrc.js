@@ -1,13 +1,13 @@
 module.exports = {
-  'extends': 'standard',
-  'plugins': [
+  extends: 'standard',
+  plugins: [
     'standard',
     'promise'
   ],
-  'globals': {
-    'atom': true,
-    'IntersectionObserver': true,
-    'MutationObserver': true,
-    'performance': true
+  globals: {
+    atom: true,
+    IntersectionObserver: true,
+    MutationObserver: true,
+    performance: true
   }
 }

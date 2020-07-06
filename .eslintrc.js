@@ -5,6 +5,9 @@ module.exports = {
     'promise'
   ],
   'globals': {
-    'atom': true
+    'atom': true,
+    'IntersectionObserver': true,
+    'MutationObserver': true,
+    'performance': true
   }
 }

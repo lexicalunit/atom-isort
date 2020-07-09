@@ -3,9 +3,11 @@ import json
 import os
 import sys
 from contextlib import contextmanager
-from pathlib import Path
 
 import isort
+
+if sys.version_info[0] >= 3:
+    from pathlib import Path
 
 sys.dont_write_bytecode = True
 
@@ -61,6 +63,8 @@ class IsortTools(object):
         with silence_stdout():
             new_contents = None
             if int(isort.__version__.split(".")[0]) >= 5:
+                # isort version 5+ seems to use pathlib internally so I think it's
+                # python3 only, so we can assume that Path is imported here.
                 contents = request["file_contents"]
                 path = Path(request.get("file_path"))
                 new_contents = isort.code(code=contents, file_path=path)

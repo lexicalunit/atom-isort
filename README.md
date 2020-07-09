@@ -39,6 +39,8 @@ npm install
 
 # check linting
 npx eslint .
+black src/isort-wrapper.py
+flake8 src/isort-wrapper.py
 
 # check unit tests against atom and atom-beta against the latest isort
 yes | pip install isort

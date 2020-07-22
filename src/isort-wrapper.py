@@ -62,15 +62,15 @@ class IsortTools(object):
 
         with silence_stdout():
             new_contents = None
+            contents = request["file_contents"]
             if int(isort.__version__.split(".")[0]) >= 5:
                 # isort version 5+ seems to use pathlib internally so I think it's
                 # python3 only, so we can assume that Path is imported here.
-                contents = request["file_contents"]
                 path = Path(request.get("file_path"))
                 new_contents = isort.code(code=contents, file_path=path)
             else:
                 response = isort.SortImports(
-                    file_contents=request["file_contents"],
+                    file_contents=contents,
                     file_path=request.get("file_path"),
                     write_to_stdout=True,
                     not_skip=["__init__.py", request.get("file_path")],
@@ -86,11 +86,16 @@ class IsortTools(object):
                 )
 
         if request["type"] == "sort_text":
-            return self._write_response(
-                self._serialize_response(
-                    "sort_text_response", {"new_contents": new_contents}
+            if new_contents == contents:
+                return self._write_response(self._serialize_response(
+                    "sort_text_response_no_change", {}
+                ))
+            else:
+                return self._write_response(
+                    self._serialize_response(
+                        "sort_text_response", {"new_contents": new_contents}
+                    )
                 )
-            )
 
         if request["type"] == "check_text":
             # NOTE: Some explanation required:
@@ -100,14 +105,14 @@ class IsortTools(object):
             # can replicate the behavior by sorting imports and then comparing
             # to the unsorted text. If they are different, then they are not
             # sorted.
-            if len(request["file_contents"].split()) == 0:
+            if len(contents.split()) == 0:
                 correctly_sorted = True
             else:
                 if sys.version_info[0] == 2:
                     unicode_new_contents = unicode(new_contents, "utf-8")  # noqa: F821
-                    correctly_sorted = unicode_new_contents == request["file_contents"]
+                    correctly_sorted = unicode_new_contents == contents
                 else:
-                    correctly_sorted = new_contents == request["file_contents"]
+                    correctly_sorted = new_contents == contents
             return self._write_response(
                 self._serialize_response(
                     "check_text_response", {"correctly_sorted": correctly_sorted,}

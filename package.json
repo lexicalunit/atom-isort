@@ -11,6 +11,9 @@
   "package-deps": [
     "linter:2.0.0"
   ],
+  "activationHooks": [
+    "core:loaded-shell-environment"
+  ],
   "providedServices": {
     "linter": {
       "versions": {
